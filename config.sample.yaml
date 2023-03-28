@@ -1,0 +1,33 @@
+# See https://spec.matrix.org/v1.6/application-service-api/#registration
+hs_token: Generate one with pwgen -s 64 1
+as_token: Generate one with pwgen -s 64 1
+
+# Homeserver name, for MXIDs
+homeserver: uplink.mit.edu # For testing
+#homeserver: matrix.mit.edu # Production
+
+# Homeserver URL, where you can actually reach the Matrix REST API
+homeserver_url: uplink.mit.edu # For testing
+#homeserver: matrix-synapse.mit.edu # Production
+
+# The prefixes to claim
+
+zephyr_user_prefix: _zephyr_
+
+# Bridge all Zephyr instance of class in its own room
+zephyr_space_prefix: Z/
+
+# Bridge all Zephyr instances of class in the same room
+zephyr_room_prefix: z/
+
+# The string in between the class name and the instance name, for room aliases
+# e.g. z/sipb/town-square
+#            ^
+class_instance_separator: /
+
+# Where should the appservice host its rest API?
+listen_address: 127.0.0.0
+listen_port: 29781
+
+# URL for the Matrix homeserver to connect to the appservice
+url: http://localhost:29781

@@ -1,3 +1,9 @@
+# Appservice registration
+registration.yaml
+
+# Actual private config file with secrets
+config.yaml
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
