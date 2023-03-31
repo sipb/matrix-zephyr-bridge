@@ -25,5 +25,5 @@ def create_room(room_alias):
     pass
 
 
-# TODO: implement "thirdparty endpoints" (revert [insert commit id here])
+# TODO: implement "thirdparty endpoints" (revert commit 4b12a963aa26f1f422eada928ac644dfcc394d87)
 # I will not prioritize them since they don't seem to be used, even
