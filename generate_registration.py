@@ -1,6 +1,5 @@
 import yaml
-
-config = yaml.load(open("config.yaml", "r"), yaml.Loader)
+from config import config
 
 # https://spec.matrix.org/v1.6/application-service-api/#registration
 registration = {
@@ -17,10 +16,12 @@ registration = {
             {"exclusive": True, "regex": f"@{config['zephyr_user_prefix']}.+"},
         ],
     },
-    "protocols": ["zephyr"],
     "rate_limited": False,
     "sender_localpart": "zephyrbot",
     "url": config["url"]
 }
+
+if config['enable_thirdparty_reporting']:
+    registration["protocols"] = ["zephyr"]
 
 yaml.dump(registration, open("registration.yaml", "w"), yaml.Dumper)
