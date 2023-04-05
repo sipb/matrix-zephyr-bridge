@@ -14,10 +14,10 @@ def authenticated(func):
     @functools.wraps(func)
     def wrapped(*args, **kwargs):
         if "Authorization" not in request.headers:
-            return 401, {'errcode': 'edu.mit.sipb.zephyr_bridge_unauthorized'}
+            return {'errcode': 'edu.mit.sipb.zephyr_bridge_unauthorized'}, 401
         token = request.headers["Authorization"].split(" ")[-1]
         if token != config["hs_token"]:
-            return 403, {'errcode': 'edu.mit.sipb.zephyr_bridge_forbidden'}
+            return {'errcode': 'edu.mit.sipb.zephyr_bridge_forbidden'}, 403
         return func(*args, **kwargs)
     return wrapped
 
