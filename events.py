@@ -14,15 +14,15 @@ class ClientEvent:
     origin_server_ts: int
     room_id: str
     sender: str
-    state_key: Optional[str] = None
     type: str
-    unsigned: UnsignedData
+    state_key: Optional[str] = None
+    unsigned: Optional[UnsignedData] = None
 
 
 @dataclass_json
 @dataclass
 class UnsignedData:
-    age: int
-    prev_content: dict
-    redacted_because: ClientEvent
-    transaction_id: str
+    age: Optional[int] = None
+    prev_content: Optional[dict] = None
+    redacted_because: Optional[ClientEvent] = None
+    transaction_id: Optional[str] = None
