@@ -16,7 +16,7 @@ def authenticated(func):
         if "Authorization" not in request.headers:
             return {'errcode': 'edu.mit.sipb.zephyr_bridge_unauthorized'}, 401
         token = request.headers["Authorization"].split(" ")[-1]
-        if token != config["hs_token"]:
+        if token != config.hs_token:
             return {'errcode': 'edu.mit.sipb.zephyr_bridge_forbidden'}, 403
         return func(*args, **kwargs)
     return wrapped

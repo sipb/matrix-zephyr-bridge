@@ -10,20 +10,20 @@ homeserver: uplink.mit.edu # For testing
 homeserver_url: uplink.mit.edu # For testing
 #homeserver: matrix-synapse.mit.edu # Production
 
-# The prefixes to claim
+# The prefixes to claim (uncomment to change)
 
-zephyr_user_prefix: _zephyr_
+#zephyr_user_prefix: _zephyr_
 
 # Bridge all Zephyr instance of class in its own room
-zephyr_space_prefix: Z/
+#zephyr_space_prefix: Z/
 
 # Bridge all Zephyr instances of class in the same room
-zephyr_room_prefix: z/
+#zephyr_room_prefix: z/
 
 # The string in between the class name and the instance name, for room aliases
 # e.g. z/sipb/town-square
 #            ^
-class_instance_separator: /
+#class_instance_separator: /
 
 # Where should the appservice host its rest API?
 listen_address: 127.0.0.0
