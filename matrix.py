@@ -3,7 +3,7 @@ from config import config
 import json
 import sys
 
-def api_query(method: str, path: str, params={}, body={}, user_id=None):
+def api_query(method: str, path: str, body=None, params=None, user_id=None):
     """
     Make a query to the REST API with given method and path (must begin with /).
 
@@ -12,6 +12,13 @@ def api_query(method: str, path: str, params={}, body={}, user_id=None):
 
     Returns a tuple with response (JSON) and status code
     """
+    # As we learned in 6.101, Python initializes default parameters only ONCE
+    # so setting a default param to {} may cause aliasing errors if mutating it
+    if params is None:
+        params = {}
+    if body is None:
+        body = {}
+
     if not path.startswith('/'):
         raise ValueError(f'path should start with /')
 
@@ -25,7 +32,7 @@ def api_query(method: str, path: str, params={}, body={}, user_id=None):
         json=body,
         headers={
             'Authorization': f'Bearer {config.as_token}'
-        }
+        },
     )
 
     # TODO: this may throw an error if not JSON
