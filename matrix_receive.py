@@ -44,16 +44,18 @@ def process_events(txn_id):
 @app.put('/_matrix/app/v1/rooms/<string:txn_id>')
 @authenticated
 def create_room(room_alias):
+    print(f"Asked for room {room_alias}")
     if not matrix.get_room_id(room_alias):
-        print(f"Creating room {room_alias}")
         # TODO: handle space creation for briding entire classes, etc
         location = get_zephyr_location(room_alias)
         if not location:
+            print(f"Returning 404, does not exist in Zephyr")
             return {'errcode': 'edu.sipb.mit.not_implemented'}, 404
         cls, instance = location
         # TODO: actually subscribe to it (to do zephyr->matrix bridging)
         # keep track of subscriptions somewhere??! (yaml? json? sqlite?)
         # TODO: tweak room options for good user experience (history visibility, public, do we want federation? etc)
+        print(f"Actually creating room")
         room_id = matrix.create_room(
             alias_localpart=f'{config.zephyr_room_prefix}{cls}{config.class_instance_separator}{instance}',
             name=f'-c {cls} -i {instance}', # TODO: use a friendlier name
