@@ -20,7 +20,7 @@ def process_events(txn_id):
     for event in events:
         if event.type == 'm.room.message':
             zephyr_location = get_zephyr_location(event.room_id)
-            if zephyr_location is None:
+            if not zephyr_location:
                 print(f"Not bridging unknown event from {event.sender} in {event.room_id}", file=sys.stderr)
             cls, instance = zephyr_location
             send_zephyr_message(
