@@ -10,7 +10,7 @@ def extract_mxid(mxid: str):
     and homeserver
     """
     array = mxid[1:].split(':')
-    assert len(array) == 2, 'MXID has an excess colon'
+    assert len(array) == 2, 'MXID must have one (and only one) colon'
     return tuple(array)
 
 
