@@ -45,11 +45,15 @@ def get_room_alias(room_id) -> str:
     """
     Gets the canonical alias of the given room
     """
-    return get_state_event(room_id, 'm.room.canonical_alias', '')['alias']
+    state = get_state_event(room_id, 'm.room.canonical_alias', '')
+    if state:
+        return state['alias']
 
 
 def get_display_name(room_id, user_id) -> str | None:
     """
     Gets the display name of the given user in the given room
     """
-    return get_state_event(room_id, 'm.room.member', user_id).get('displayname')
+    state = get_state_event(room_id, 'm.room.member', user_id)
+    if state:
+        return state.get('displayname')
