@@ -1,10 +1,6 @@
 import zephyr
 import sys
-
-DEFAULT_OPCODE = ''
-DEFAULT_CLASS = 'MESSAGE'
-DEFAULT_INSTANCE = 'PERSONAL'
-DEFAULT_REALM = 'ATHENA.MIT.EDU'
+from constants import *
 
 zephyr.init()
 
