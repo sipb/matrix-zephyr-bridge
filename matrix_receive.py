@@ -10,6 +10,7 @@ from constants import *
 app = Flask(__name__)
 
 # https://spec.matrix.org/v1.6/application-service-api/#put_matrixappv1transactionstxnid
+@app.put('/transactions/<string:txn_id>')
 @app.put('/_matrix/app/v1/transactions/<string:txn_id>')
 @authenticated
 # @idempotent # there is a specific order we want, (if someone runs an unauthenticated query, we don't want it logged as already fulfilled)
@@ -38,6 +39,7 @@ def process_events(txn_id):
 
 
 # https://spec.matrix.org/v1.6/application-service-api/#get_matrixappv1roomsroomalias
+@app.put('/rooms/<string:txn_id>')
 @app.put('/_matrix/app/v1/rooms/<string:txn_id>')
 @authenticated
 def create_room(room_alias):
