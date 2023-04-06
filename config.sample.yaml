@@ -7,7 +7,7 @@ homeserver: uplink.mit.edu # For testing
 #homeserver: matrix.mit.edu # Production
 
 # Homeserver URL, where you can actually reach the Matrix REST API
-homeserver_url: uplink.mit.edu # For testing
+homeserver_url: https://uplink.mit.edu # For testing
 #homeserver: matrix-synapse.mit.edu # Production
 
 # The prefixes to claim (uncomment to change)
