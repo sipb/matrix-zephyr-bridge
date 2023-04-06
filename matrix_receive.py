@@ -28,7 +28,7 @@ def process_events(txn_id):
                 message=event.content['body'], # TODO: handle formatting, m.emote, etc
                 cls=cls,
                 instance=instance,
-                display_name=matrix.get_display_name(event.room_id, event.sender),
+                display_name=matrix.get_room_display_name(event.room_id, event.sender),
                 sender=get_zephyr_user(event.sender),
 
                 # Matrix uses m.notice for (some) automated messages

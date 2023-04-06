@@ -2,6 +2,7 @@ import requests
 from config import config
 import json
 import sys
+from util import get_unique_transaction_id
 
 def api_query(method: str, path: str, body=None, params=None, user_id=None):
     """
@@ -43,6 +44,10 @@ def get_state_event(room_id, event_type, state_key='') -> dict:
     """
     Returns the state event with given characteristics, or none if not found
     """
+    # Resolve alias first, if necessary
+    if room_id.startswith('#'):
+        room_id = get_room_id(room_id)
+
     response, code = api_query('GET', f'/_matrix/client/v3/rooms/{room_id}/state/{event_type}/{state_key}')
     if code != 200:
         return None
@@ -73,14 +78,86 @@ def get_room_id(room_alias) -> str:
         print(f"ERROR WHILE TRYING TO GET ROOM ID FOR {room_alias}:", response)
 
 
-def get_display_name(room_id, user_id) -> str | None:
+def get_room_display_name(room_id, user_id) -> str | None:
     """
     Gets the display name of the given user in the given room
     """
+    # Resolve alias first, if necessary
+    if room_id.startswith('#'):
+        room_id = get_room_id(room_id)
+
     state = get_state_event(room_id, 'm.room.member', user_id)
     if state:
         return state.get('displayname')
+
+
+def set_room_display_name(room_id, user_id, display_name):
+    """
+    Sets the display name of the given user in the given room
+    """
+    # send m.room.member state event, idk which one - refer to spec
+    raise NotImplementedError('setting room display name not implemented')
+
+
+def get_global_display_name(user_id) -> str | None:
+    """
+    Gets the display name of the given user,joining globally
+    or None if can't find
+    """
+    response, code = api_query('GET', f'/_matrix/client/v3/profile/{user_id}/displayname')
+    if code != 200:
+        print(f"Error while getting display name for {user_id}: {response}", file=sys.stderr)
+    return response.get('displayname')
+
+
+def set_global_display_name(user_id) -> bool:
+    """
+    Sets the displayname of the given user,
+    returns True/False depending on success
+    """
+    response, code = api_query('GET', f'/_matrix/client/v3/profile/{user_id}/displayname')
+    if code != 200:
+        print(f"Error while setting display name for {user_id}: {response}", file=sys.stderr)
+    return code == 200
+
+
+def join_room(room_id: str, user_id: str) -> bool:
+    """
+    Joins user to room
+    """
+    # Resolve alias first, if necessary
+    # TODO: this can be a decorator to avoid duplication
+    if room_id.startswith('#'):
+        room_id = get_room_id(room_id)
     
+    response, code = api_query('POST', f'/_matrix/client/v3/rooms/{room_id}/join', user_id=user_id)
+    if code != 200:
+        print(f"Error while joining {user_id} to {room_id}: {response}", file=sys.stderr)
+    return code == 200
+
+
+def send_text_message(room_id, user_id, message):
+    """
+    Send a simple text message to the given room
+    """
+    # Resolve alias first, if necessary
+    if room_id.startswith('#'):
+        room_id = get_room_id(room_id)
+
+    # TODO: extract into a function to send events in general
+    response, code = api_query(
+        'PUT',
+        f'/_matrix/client/v3/rooms/{room_id}/send/m.room.message/{get_unique_transaction_id()}',
+        user_id=user_id,
+        body={
+            'body': message,
+            'msgtype': 'm.text',
+        }
+    )
+    if code != 200:
+        print(f"Error while sending message from {user_id} to {room_id}: {response}", file=sys.stderr)
+    return code == 200
+
 
 def create_room(alias_localpart = None, name = None, preset = None):
     """
@@ -104,3 +181,19 @@ def create_room(alias_localpart = None, name = None, preset = None):
         return response['room_id']
     else:
         print(f"COULD NOT CREATE ROOM {alias_localpart}: {response}", file=sys.stderr)
+
+
+def create_user(username):
+    """
+    Creates a user, returning True if successful
+    """
+    response, code = api_query('POST', '/_matrix/client/v3/register', {
+        'type': 'm.login.application_service',
+        'username': username,
+        'inhibit_login': True,
+    })
+    if code == 200:
+        return True
+    else:
+        print(f"COULD NOT CREATE USER {username}: {response}")
+        return False

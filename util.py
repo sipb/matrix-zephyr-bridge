@@ -3,6 +3,16 @@ import sys
 import matrix
 import zephyr
 from constants import *
+import uuid
+
+def get_unique_transaction_id():
+    """
+    Get a unique transaction ID for API requests
+
+    https://spec.matrix.org/v1.6/client-server-api/#transaction-identifiers
+    """
+    # a simpler counter is recommended, but we'd need somewhere to store the counter
+    return str(uuid.uuid4())
 
 def extract_mxid(mxid: str):
     """
