@@ -36,6 +36,7 @@ def process_events(txn_id):
                 # Honor this metadata for both networks
                 opcode='AUTO' if event.content['msgtype'] == 'm.notice' else DEFAULT_OPCODE,
             )
+    return {}, 200
 
 
 # https://spec.matrix.org/v1.6/application-service-api/#get_matrixappv1roomsroomalias
