@@ -2,7 +2,7 @@ from flask import Flask, request, Response
 from decorators import *
 from events import ClientEvent
 from config import config
-from util import get_zephyr_location, send_zephyr_message, get_zephyr_user
+from util import get_zephyr_location, send_zephyr_message, get_zephyr_user, create_zephyr_room, get_zephyr_localpart
 import sys
 import matrix
 from constants import *
@@ -46,13 +46,12 @@ def process_events(txn_id):
 # The endpoint below DOES work
 zephyr_class_instance_mxid = f'#{config.zephyr_room_prefix}<string:cls>{config.class_instance_separator}<string:instance>:{config.homeserver}'
 @app.get(f'/rooms/{zephyr_class_instance_mxid}')
-@app.put(f'/_matrix/app/v1/rooms/{zephyr_class_instance_mxid}')
+@app.get(f'/_matrix/app/v1/rooms/{zephyr_class_instance_mxid}')
 @authenticated
 # def create_room(room_alias):
 def create_room(cls, instance):
-    # print(f"Asked for room {room_alias}")
-    # if not matrix.get_room_id(room_alias):
-    if True: # TODO: fix lmao - actually check if it exists although the homeserver has no reason to call this if it exists
+    room_alias = f'#{get_zephyr_localpart(cls, instance)}:{config.homeserver}'
+    if not matrix.get_room_id(room_alias):
         # TODO: handle space creation for briding entire classes, etc
         # location = get_zephyr_location(room_alias)
         # if not location:
@@ -63,11 +62,7 @@ def create_room(cls, instance):
         # keep track of subscriptions somewhere??! (yaml? json? sqlite?)
         # TODO: tweak room options for good user experience (history visibility, public, do we want federation? etc)
         print(f"Actually creating room")
-        room_id = matrix.create_room(
-            alias_localpart=f'{config.zephyr_room_prefix}{cls}{config.class_instance_separator}{instance}',
-            name=f'-c {cls} -i {instance}', # TODO: use a friendlier name
-            preset='public_chat',
-        )
+        room_id = create_zephyr_room(cls, instance)
         if not room_id:
             return {'errcode': 'edu.sipb.mit.unknown'}, 500
         print("Done creating", cls, instance)

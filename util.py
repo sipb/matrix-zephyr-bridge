@@ -14,6 +14,27 @@ def get_unique_transaction_id():
     # a simpler counter is recommended, but we'd need somewhere to store the counter
     return str(uuid.uuid4())
 
+
+def get_zephyr_localpart(cls, instance):
+    """
+    Gets the localpart to use for the room with given Zephyr class and instance
+    """
+    return f'{config.zephyr_room_prefix}{cls}{config.class_instance_separator}{instance}'
+
+
+def create_zephyr_room(cls, instance):
+    """
+    Create a Matrix room corresponding to the given Zephyr class and instance
+
+    Returns the room ID of the new room (or None)
+    """
+    return matrix.create_room(
+        alias_localpart=get_zephyr_localpart(cls, instance),
+        name=f'-c {cls} -i {instance}', # TODO: use a friendlier name
+        preset='public_chat',
+    )
+
+
 def extract_mxid(mxid: str):
     """
     Given an MXID, return a tuple containing the localpart
@@ -69,22 +90,3 @@ def get_zephyr_location(mxid: str) -> tuple[str] | bool:
         print(f"Unknown zephyr triplet for {mxid}", file=sys.stderr)
         return False
 
-
-def send_zephyr_message(message, cls=DEFAULT_CLASS, instance=DEFAULT_INSTANCE, opcode=DEFAULT_OPCODE, sender=None, display_name=None):
-    """
-    Send a Zephyr message to the given class and instance
-    """
-    # Set signature to sender if not given
-    if display_name is None:
-        display_name = sender
-    
-    zephyr.init()
-    notice = zephyr.ZNotice(
-        cls=cls,
-        instance=instance,
-        sender=sender,
-        opcode=opcode,
-        format='Config error: see http://mit.edu/df', # URL actually leads somewhere (what BarnOwl uses)
-        fields=[display_name, message],
-    )
-    notice.send()
