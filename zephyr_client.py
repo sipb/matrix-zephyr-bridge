@@ -20,7 +20,8 @@ class Zephyr:
         cls,instance,recipient = triplet
         if instance == '*':
             self._entire_class_subscriptions.add(cls)
-        assert recipient == '*', 'Non-wildcard recipients are not supported by this bridge'
+        if recipient != '*':
+            raise ValueError('Non-wildcard recipients are not supported')
         self._subscriptions.add(triplet)
         
 
@@ -57,7 +58,7 @@ class Zephyr:
     
 
     @staticmethod
-    def send_message(message, cls=DEFAULT_CLASS, instance=DEFAULT_INSTANCE, opcode=MATRIX_OPCODE, sender=None, display_name=None):
+    def send_message(message, cls=DEFAULT_CLASS, instance=DEFAULT_INSTANCE, opcode=MATRIX_OPCODE, sender=None, display_name=None, recipient=None):
         """
         Send a Zephyr message to the given class and instance
         """
@@ -75,6 +76,7 @@ class Zephyr:
             opcode=opcode,
             format='Config error: see http://mit.edu/df', # URL actually leads somewhere (what BarnOwl uses)
             fields=[display_name, message],
+            recipient=recipient,
 
             # otherwise tickets will expire and someone or something needs to kinit (the keytab) again
             # (TODO: is there any use to authenticating?)

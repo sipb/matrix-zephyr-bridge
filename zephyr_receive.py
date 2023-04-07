@@ -6,7 +6,41 @@ from util import strip_default_realm, create_zephyr_room_if_needed, get_zephyr_l
 from config import config
 import matrix
 
-z = Zephyr()
+z: Zephyr = Zephyr()
+
+def handle_bot_command(message: str, sender: str) -> str:
+    """
+    Synchronously get the output of a command
+    """
+    command = message.split(' ')[0]
+    if command == 'ping':
+        return 'pong'
+    elif command == 'echo':
+        body = message.split(' ', 1)[1:][0]
+        return body
+    elif command == 'add':
+        try:
+            cls, instance, recipient = message.split(' ')[1:]
+            line = ','.join([cls, instance, recipient])
+            if '\\' in line or '"' in line:
+                return 'Error: Backslashes/quotes are not currently supported'
+            z.subscribe(cls, instance)
+            return f"Successfully subscribed to -c {cls} -i {instance}"
+        except ValueError as e:
+            return f'Error: `add` expects exactly 3 parameters separated by spaces: {e}'
+    elif command == 'send':
+        try:
+            recipient, message = message.split(' ', 2)[1:]
+            # TODO: direct messages are just rooms.
+            # using a library would take care of doing this for us
+            return 'This feature is not implemented (ask rgabriel to implement it)'
+        except ValueError:
+            return f'What do you wish to send to {sender}?'
+    elif command == 'help':
+        return 'Available commands are ping, echo, add, and send (unimplemented)'
+    else:
+        return f'Error: Unknown command {command}'
+
 
 def on_zephyr_message(message: zephyr.ZNotice):
     """
@@ -15,6 +49,7 @@ def on_zephyr_message(message: zephyr.ZNotice):
     print(message.__dict__)
     
     sender = strip_default_realm(message.sender)
+    recipient = strip_default_realm(message.recipient)
 
     # Pings are not messages
     if message.opcode == 'PING':
@@ -46,14 +81,12 @@ def on_zephyr_message(message: zephyr.ZNotice):
 
     # This is a DM! 
     if message.cls == DEFAULT_CLASS and message.instance == DEFAULT_INSTANCE:
-        # TODO: handle.
-        # 
-        # For now, it can only be the bot's DMs, but once it uses webathena tickets,
-        # this could mean anyone's DMs, to be bridged!
-        #
-        # Also how to subscribe to a custom instance with default class? Zulip does it...
-        recipient = strip_default_realm(message.recipient)
-        print(f"Skipped DM from {sender} ({display_name}) to {recipient}:\n{content}")
+        # If it's addressed to us, handle it as a command
+        if recipient == OWN_KERB:
+            print(f"Handling command from {message.sender}")
+            z.send_message(message=handle_bot_command(content, sender), recipient=sender, display_name='Matrix')
+        else:
+            print(f"Skipped DM from {sender} ({display_name}) to {recipient}:\n{content}", file=sys.stderr)
         return
 
     # TODO: handle lack of success ↓
