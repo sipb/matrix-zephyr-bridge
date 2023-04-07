@@ -2,7 +2,17 @@ import requests
 from config import config
 import json
 import sys
-from util import get_unique_transaction_id
+import uuid
+
+def get_unique_transaction_id():
+    """
+    Get a unique transaction ID for API requests
+
+    https://spec.matrix.org/v1.6/client-server-api/#transaction-identifiers
+    """
+    # a simpler counter is recommended, but we'd need somewhere to store the counter
+    return str(uuid.uuid4())
+
 
 def api_query(method: str, path: str, body=None, params=None, user_id=None):
     """

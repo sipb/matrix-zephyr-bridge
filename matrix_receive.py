@@ -2,7 +2,7 @@ from flask import Flask, request, Response
 from decorators import *
 from events import ClientEvent
 from config import config
-from util import get_zephyr_location, send_zephyr_message, get_zephyr_user, create_zephyr_room_if_needed, get_zephyr_localpart
+from util import get_zephyr_location, get_zephyr_user, create_zephyr_room_if_needed, get_zephyr_localpart
 import sys
 import matrix
 from constants import *
