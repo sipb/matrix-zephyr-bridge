@@ -69,6 +69,11 @@ class Zephyr:
             opcode=opcode,
             format='Config error: see http://mit.edu/df', # URL actually leads somewhere (what BarnOwl uses)
             fields=[display_name, message],
+
+            # otherwise tickets will expire and someone or something needs to kinit (the keytab) again
+            # (TODO: is there any use to authenticating?)
+            # http://kb.mit.edu/confluence/pages/viewpage.action?pageId=3907535
+            auth=False,
         )
         notice.send()
 
