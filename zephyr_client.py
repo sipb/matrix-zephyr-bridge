@@ -10,8 +10,8 @@ class Zephyr:
     """
 
     # Which classes are we subscribed to all their instances?
-    entire_class_subscriptions: set[str]
-    subscriptions: zephyr.Subscriptions
+    _entire_class_subscriptions: set[str]
+    _subscriptions: zephyr.Subscriptions
 
     def _subscribe(self, triplet):
         """
@@ -19,16 +19,18 @@ class Zephyr:
         """
         cls,instance,recipient = triplet
         if instance == '*':
-            self.entire_class_subscriptions.add(cls)
-        assert recipient == '*', 'Wildcard recipients are not supported by this bridge'
-        self.subscriptions.add(triplet)
+            self._entire_class_subscriptions.add(cls)
+        print(triplet)
+        assert recipient == '*', 'Non-wildcard recipients are not supported by this bridge'
+        self._subscriptions.add(triplet)
         
 
     def __init__(self):
+        self._entire_class_subscriptions = set()
         zephyr.init()
-        self.subscriptions = zephyr.Subscriptions()
+        self._subscriptions = zephyr.Subscriptions()
         with open(ZEPHYR_SUBSCRIPTIONS_FILE, 'r') as f:
-            subscriptions = [tuple(line.split(',')) for line in f.readlines()]
+            subscriptions = [tuple(line.split(',')) for line in f.read().split('\n') if line != '']
         for triplet in subscriptions:
             self._subscribe(triplet)
         
@@ -37,7 +39,7 @@ class Zephyr:
         """
         Are we subscribed to all instances of `cls`?
         """
-        return cls in self.entire_class_subscriptions
+        return cls in self._entire_class_subscriptions
     
     
     def subscribe(self, cls, instance=None):
@@ -49,7 +51,7 @@ class Zephyr:
         """ 
         triplet = (cls, instance if instance else '*', '*')
         with open(ZEPHYR_SUBSCRIPTIONS_FILE, 'a') as f:
-            f.write(','.join(triplet))
+            f.write(','.join(triplet) + '\n')
         self._subscribe(triplet)
     
 
