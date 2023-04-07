@@ -73,13 +73,19 @@ def get_room_alias(room_id) -> str:
         return state['alias']
 
 
-def get_room_id(room_alias) -> str:
+def get_room_id(room_alias: str) -> str:
     """
     Inverse of get_room_alias: given a room alias, return the room ID
 
     Returns None if alias does not exist
     """
-    response, code = api_query('GET', f'/_matrix/client/v3/directory/room/{room_alias}')
+    # Do some (relevant) URL encoding
+    room_alias_encoded = room_alias \
+        .replace('/', '%2F') \
+        .replace('#', '%23') \
+        .replace(':', '%3A')
+
+    response, code = api_query('GET', f'/_matrix/client/v3/directory/room/{room_alias_encoded}')
     if code == 404:
         return None
     elif code == 200:

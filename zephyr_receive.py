@@ -49,7 +49,7 @@ def on_zephyr_message(message: zephyr.ZNotice):
         print(f"Skipped DM from {sender} ({display_name}) to {recipient}:\n{content}")
         return
 
-    # TODO: handle lack of success
+    # TODO: handle lack of success ↓
 
     # Create room (if needed)
     create_zephyr_room_if_needed(message.cls, message.instance)
@@ -57,14 +57,21 @@ def on_zephyr_message(message: zephyr.ZNotice):
     # Create user (if needed)
     matrix.create_user(f'{config.zephyr_user_prefix}{sender}')
 
+    room_alias = f'#{get_zephyr_localpart(message.cls, message.instance)}:{config.homeserver}'
+    matrix_user_id = f'@{config.zephyr_user_prefix}{sender}:{config.homeserver}'
+
+    # Join user to room (if needed)
+    # TODO: check if in room, then join only if not
+    matrix.join_room(room_alias, matrix_user_id)
+
     # Adjust display name (if needed)
-    current_matrix_name = matrix.get_global_display_name(f'@{config.zephyr_user_prefix}{sender}:{config.homeserver}')
+    current_matrix_name = matrix.get_global_display_name(matrix_user_id)
     if display_name and current_matrix_name != display_name:
-        matrix.set_global_display_name(f'@{config.zephyr_user_prefix}{sender}:{config.homeserver}', display_name)
+        matrix.set_global_display_name(matrix_user_id, display_name)
 
     # Send message!
     matrix.send_text_message(
-        room_id=f'#{get_zephyr_localpart(message.cls, message.instance)}:{config.homeserver}',
+        room_id=room_alias,
         message=content,
         user_id=f'@{config.zephyr_user_prefix}{sender}:{config.homeserver}'
     )
