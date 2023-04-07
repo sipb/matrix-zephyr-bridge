@@ -34,3 +34,10 @@ url: http://localhost:29781
 
 # Tell the homeserver that this appservice bridges the "zephyr" protocol
 enable_thirdparty_reporting: false
+
+# Block certain Zephyr "opcodes"
+#  * Prevent the bridge's messages from bouncing back
+#  * And block mattermost to prevent messages from being double bridged
+blocked_opcodes:
+  - matrix
+  - mattermost

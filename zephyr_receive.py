@@ -12,6 +12,8 @@ def on_zephyr_message(message: zephyr.ZNotice):
     """
     Handles Zephyr message received (to bridge to Matrix)
     """
+    print(message.__dict__)
+    
     sender = strip_default_realm(message.sender)
 
     # Pings are not messages
@@ -33,6 +35,11 @@ def on_zephyr_message(message: zephyr.ZNotice):
 
     display_name, content = message.fields
     
+    # Respect blocked opcodes
+    if message.opcode in config.blocked_opcodes:
+        print(f"Not bridging blocked opcode: {message.opcode}")
+        return
+
     # Treat empty signature as just kerb
     if display_name == '':
         display_name = sender

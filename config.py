@@ -39,6 +39,10 @@ class Config:
     # Bot localpart/username
     username: Optional[str] = "zephyrbot"
 
+    # Blocked opcodes for Zephyr
+    # (this was going to be blocked hosts but it seems very hard to implement)
+    blocked_opcodes: Optional[tuple[str]] = ("matrix",)
+
 
 config: Config = Config.from_dict(yaml.load(open("config.yaml", "r"), yaml.Loader))
 
