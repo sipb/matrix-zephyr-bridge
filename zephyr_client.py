@@ -26,6 +26,8 @@ class Zephyr:
 
     def __init__(self):
         self._entire_class_subscriptions = set()
+        # TODO: run kinit otherwise SERVNAK
+        # and figure out how to do that regularly?
         zephyr.init()
         self._subscriptions = zephyr.Subscriptions()
         with open(ZEPHYR_SUBSCRIPTIONS_FILE, 'r') as f:

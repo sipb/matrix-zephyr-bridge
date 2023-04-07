@@ -20,6 +20,9 @@ def process_events(txn_id):
     print("processing event", txn_id)
     events: list[ClientEvent] = (ClientEvent.from_dict(event) for event in request.json["events"])
     for event in events:
+        # Ignore our own messages!
+        if event.sender.startswith(config.zephyr_user_prefix):
+            return
         if event.type == 'm.room.message':
             zephyr_location = get_zephyr_location(event.room_id)
             if not zephyr_location:
