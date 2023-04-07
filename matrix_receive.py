@@ -34,11 +34,6 @@ def process_events(txn_id):
                 instance=instance,
                 display_name=matrix.get_room_display_name(event.room_id, event.sender),
                 sender=get_zephyr_user(event.sender),
-
-                # Matrix uses m.notice for (some) automated messages
-                # Zephyr uses the AUTO opcode as metadata to indicate automated messages
-                # Honor this metadata for both networks
-                opcode='AUTO' if event.content['msgtype'] == 'm.notice' else DEFAULT_OPCODE,
             )
     return {}, 200
 
