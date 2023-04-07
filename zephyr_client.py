@@ -55,7 +55,7 @@ class Zephyr:
     
 
     @staticmethod
-    def send_message(self, message, cls=DEFAULT_CLASS, instance=DEFAULT_INSTANCE, opcode=DEFAULT_OPCODE, sender=None, display_name=None):
+    def send_message(message, cls=DEFAULT_CLASS, instance=DEFAULT_INSTANCE, opcode=DEFAULT_OPCODE, sender=None, display_name=None):
         """
         Send a Zephyr message to the given class and instance
         """
