@@ -3,10 +3,11 @@ import zephyr
 zephyr.init()
 
 notice = zephyr.ZNotice(
-    cls='rgabriel',
+    cls='thisclassdoesnotexist',
     instance='test',
     sender='fakeuser',
     message='Hello world!',
-    opcode='AUTO', # I don't know what this is
+    opcode='AUTO',
+    auth=False, # FOR SCRIPTS
 )
 notice.send()
