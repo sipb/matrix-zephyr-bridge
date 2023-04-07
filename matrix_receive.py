@@ -22,7 +22,7 @@ def process_events(txn_id):
     for event in events:
         # Ignore our own messages!
         if event.sender.startswith('@' + config.zephyr_user_prefix):
-            return
+            return {}, 200
         if event.type == 'm.room.message':
             zephyr_location = get_zephyr_location(event.room_id)
             if not zephyr_location:
