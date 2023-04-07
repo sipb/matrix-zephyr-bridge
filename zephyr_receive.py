@@ -83,8 +83,8 @@ def on_zephyr_message(message: zephyr.ZNotice):
     if message.cls == DEFAULT_CLASS and message.instance == DEFAULT_INSTANCE:
         # If it's addressed to us, handle it as a command
         if recipient == OWN_KERB:
-            print(f"Handling command from {message.sender}")
-            z.send_message(message=handle_bot_command(content, sender), recipient=sender, display_name='Matrix')
+            print(f"Handling command from {sender}")
+            z.send_message(handle_bot_command(content, sender), recipient=sender)
         else:
             print(f"Skipped DM from {sender} ({display_name}) to {recipient}:\n{content}", file=sys.stderr)
         return

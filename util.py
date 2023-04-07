@@ -1,7 +1,7 @@
 from config import config
 import sys
 import matrix
-import zephyr
+from zephyr_client import Zephyr
 from constants import *
 
 def get_zephyr_localpart(cls, instance):
@@ -25,14 +25,12 @@ def create_zephyr_room_if_needed(cls, instance):
     if id_if_already_exists:
         return id_if_already_exists
     
-    # TODO: subscribe using zephyr_client.py
-    # But how can we communicate to the other process to update its subscriptions?
-    # "Message passing": we'll find out good design ways in 6.102!
-    # A hacky way would be to kill the other half, update the file then restart it
-    # (good enough ONLY for testing purposes: Ctrl+C then re run)
-    # https://pymotw.com/2/multiprocessing/communication.html ??!~
-    # https://github.com/gorakhargosh/watchdog#example-api-usaget
-    # other things: sockets, or simply literally refreshing the subscriptions file every 5 minutes?
+    # Subscribe to the room
+
+    # (ab)use command capability of the other half of the bridge
+    # TODO: switch to sqlite if sqlite is needed for something else in here
+    # (sqlite allows multiple people writing the database at once and listening for changes)
+    Zephyr.send_message(f"add {cls} {instance} *", opcode=DEFAULT_OPCODE, recipient=OWN_KERB)
 
     # TODO: tweak room options for good user experience (history visibility, public, do we want federation? etc)
     return matrix.create_room(

@@ -65,9 +65,18 @@ class Zephyr:
         # To allow static calls, seems no harm to call it multiple times
         zephyr.init()
 
+        # Don't accidentally spam everyone again.
+        if cls == DEFAULT_CLASS and instance == DEFAULT_INSTANCE:
+            if not recipient:
+                raise ValueError('DM recipient is not specified')
+
         # Set signature to sender if not given
         if display_name is None:
             display_name = sender
+
+        # Set default signature
+        if display_name is None:
+            display_name = DEFAULT_DISPLAY_NAME
         
         notice = zephyr.ZNotice(
             cls=cls,

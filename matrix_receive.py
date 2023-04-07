@@ -46,6 +46,10 @@ zephyr_class_instance_mxid = f'#{config.zephyr_room_prefix}<string:cls>{config.c
 @app.get(f'/_matrix/app/v1/rooms/{zephyr_class_instance_mxid}')
 @authenticated
 def create_instance_room(cls, instance):
+    # TODO: handle special characters by following this encoding:
+    # https://spec.matrix.org/v1.5/appendices/#mapping-from-other-character-sets
+    # and convert to and from the format in all relevant places
+    
     room_id = create_zephyr_room_if_needed(cls, instance)
     if not room_id:
         return {'errcode': 'edu.sipb.mit.unknown'}, 500
