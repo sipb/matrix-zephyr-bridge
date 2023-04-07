@@ -1,25 +1,12 @@
 import zephyr
 import sys
 from constants import *
+from zephyr_client import Zephyr
+from util import strip_default_realm, create_zephyr_room_if_needed, get_zephyr_localpart
+from config import config
+import matrix
 
-zephyr.init()
-
-# NOTE: this is already a singleton
-subs = zephyr.Subscriptions()
-
-# TODO: don't hardcode
-subs.add(('thisclassdoesnotexist', '*', '*'))
-subs.add((DEFAULT_CLASS, '*', '*'))
-
-def strip_default_realm(user: str):
-    """
-    If `user` ends with ATHENA.MIT.EDU, remove it
-    """
-    if user.endswith(DEFAULT_REALM):
-        return user[:-len(DEFAULT_REALM)-1]
-    else:
-        return user
-
+z = Zephyr()
 
 def on_zephyr_message(message: zephyr.ZNotice):
     """
@@ -59,12 +46,30 @@ def on_zephyr_message(message: zephyr.ZNotice):
         #
         # Also how to subscribe to a custom instance with default class? Zulip does it...
         recipient = strip_default_realm(message.recipient)
-        print(f"DM from {sender} ({display_name}) to {recipient}:\n{content}")
+        print(f"Skipped DM from {sender} ({display_name}) to {recipient}:\n{content}")
         return
 
-    # TODO: actually implement Matrix sending
-    # TODO: specify timestamp for Matrix
-    print(f"[-c {msg.cls} -i {msg.instance}] {content}")
+    # TODO: handle lack of success
+
+    # Create room (if needed)
+    create_zephyr_room_if_needed(message.cls, message.instance)
+    
+    # Create user (if needed)
+    matrix.create_user(sender)
+
+    # Adjust display name (if needed)
+    current_matrix_name = matrix.get_global_display_name(f'@{sender}:{config.homeserver}')
+    if display_name and current_matrix_name != display_name:
+        matrix.set_global_display_name(f'@{sender}:{config.homeserver}', display_name)
+
+    # Send message!
+    matrix.send_text_message(
+        room_id=f'#{get_zephyr_localpart(message.cls, message.instance)}:{config.homeserver}',
+        message=content,
+        user_id=f'@{config.zephyr_user_prefix}{sender}:{config.homeserver}'
+    )
+    
+    print(f"Sent [-c {msg.cls} -i {msg.instance}] {content}")
 
 
 if __name__ == '__main__':

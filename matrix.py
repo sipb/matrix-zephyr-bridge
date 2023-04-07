@@ -110,12 +110,12 @@ def get_global_display_name(user_id) -> str | None:
     return response.get('displayname')
 
 
-def set_global_display_name(user_id) -> bool:
+def set_global_display_name(user_id, display_name) -> bool:
     """
     Sets the displayname of the given user,
     returns True/False depending on success
     """
-    response, code = api_query('GET', f'/_matrix/client/v3/profile/{user_id}/displayname')
+    response, code = api_query('PUT', f'/_matrix/client/v3/profile/{user_id}/displayname', {'displayname': display_name})
     if code != 200:
         print(f"Error while setting display name for {user_id}: {response}", file=sys.stderr)
     return code == 200
@@ -159,7 +159,7 @@ def send_text_message(room_id, user_id, message):
     return code == 200
 
 
-def create_room(alias_localpart = None, name = None, preset = None):
+def create_room(alias_localpart = None, name = None, preset = None) -> str | None:
     """
     Creates a room, and returns the room ID of the newly created room
 
@@ -185,7 +185,7 @@ def create_room(alias_localpart = None, name = None, preset = None):
 
 def create_user(username):
     """
-    Creates a user, returning True if successful
+    Creates a user, returning True if successful or user already exists
     """
     response, code = api_query('POST', '/_matrix/client/v3/register', {
         'type': 'm.login.application_service',
@@ -193,7 +193,9 @@ def create_user(username):
         'inhibit_login': True,
     })
     if code == 200:
-        return True
+        return True # successfully created
+    elif response.get('errcode') == 'M_USER_IN_USE':
+        return True # already exists!
     else:
         print(f"COULD NOT CREATE USER {username}: {response}")
         return False

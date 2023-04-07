@@ -20,7 +20,6 @@ class Zephyr:
         cls,instance,recipient = triplet
         if instance == '*':
             self._entire_class_subscriptions.add(cls)
-        print(triplet)
         assert recipient == '*', 'Non-wildcard recipients are not supported by this bridge'
         self._subscriptions.add(triplet)
         

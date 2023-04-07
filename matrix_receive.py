@@ -2,7 +2,7 @@ from flask import Flask, request, Response
 from decorators import *
 from events import ClientEvent
 from config import config
-from util import get_zephyr_location, send_zephyr_message, get_zephyr_user, create_zephyr_room, get_zephyr_localpart
+from util import get_zephyr_location, send_zephyr_message, get_zephyr_user, create_zephyr_room_if_needed, get_zephyr_localpart
 import sys
 import matrix
 from constants import *
@@ -40,32 +40,17 @@ def process_events(txn_id):
 
 
 # https://spec.matrix.org/v1.6/application-service-api/#get_matrixappv1roomsroomalias
-# @app.put('/rooms/<string:room_alias>')
-# @app.put('/_matrix/app/v1/rooms/<string:room_alias>')
-# The endpoing above does NOT work, because of slashes in the mxid being confused for path slashes
-# The endpoint below DOES work
+# Using separate methods because by default, slashes are part of the alias itself
+# and Flask won't parse it otherwise
 zephyr_class_instance_mxid = f'#{config.zephyr_room_prefix}<string:cls>{config.class_instance_separator}<string:instance>:{config.homeserver}'
 @app.get(f'/rooms/{zephyr_class_instance_mxid}')
 @app.get(f'/_matrix/app/v1/rooms/{zephyr_class_instance_mxid}')
 @authenticated
-# def create_room(room_alias):
-def create_room(cls, instance):
-    room_alias = f'#{get_zephyr_localpart(cls, instance)}:{config.homeserver}'
-    if not matrix.get_room_id(room_alias):
-        # TODO: handle space creation for briding entire classes, etc
-        # location = get_zephyr_location(room_alias)
-        # if not location:
-            # print(f"Returning 404, does not exist in Zephyr")
-            # return {'errcode': 'edu.sipb.mit.not_implemented'}, 404
-        # cls, instance = location
-        # TODO: actually subscribe to it (to do zephyr->matrix bridging)
-        # keep track of subscriptions somewhere??! (yaml? json? sqlite?)
-        # TODO: tweak room options for good user experience (history visibility, public, do we want federation? etc)
-        print(f"Actually creating room")
-        room_id = create_zephyr_room(cls, instance)
-        if not room_id:
-            return {'errcode': 'edu.sipb.mit.unknown'}, 500
-        print("Done creating", cls, instance)
+def create_instance_room(cls, instance):
+    room_id = create_zephyr_room_if_needed(cls, instance)
+    if not room_id:
+        return {'errcode': 'edu.sipb.mit.unknown'}, 500
+    print("Done creating", cls, instance)
     return {}
 
 
