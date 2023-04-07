@@ -55,12 +55,12 @@ def on_zephyr_message(message: zephyr.ZNotice):
     create_zephyr_room_if_needed(message.cls, message.instance)
     
     # Create user (if needed)
-    matrix.create_user(sender)
+    matrix.create_user(f'{config.zephyr_user_prefix}{sender}')
 
     # Adjust display name (if needed)
-    current_matrix_name = matrix.get_global_display_name(f'@{sender}:{config.homeserver}')
+    current_matrix_name = matrix.get_global_display_name(f'@{config.zephyr_user_prefix}{sender}:{config.homeserver}')
     if display_name and current_matrix_name != display_name:
-        matrix.set_global_display_name(f'@{sender}:{config.homeserver}', display_name)
+        matrix.set_global_display_name(f'@{config.zephyr_user_prefix}{sender}:{config.homeserver}', display_name)
 
     # Send message!
     matrix.send_text_message(

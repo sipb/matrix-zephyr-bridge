@@ -85,6 +85,7 @@ def get_room_id(room_alias) -> str:
     elif code == 200:
         return response['room_id']
     else:
+        # TODO: it does seem to struggle with slashes
         print(f"ERROR WHILE TRYING TO GET ROOM ID FOR {room_alias}:", response)
 
 
@@ -125,7 +126,7 @@ def set_global_display_name(user_id, display_name) -> bool:
     Sets the displayname of the given user,
     returns True/False depending on success
     """
-    response, code = api_query('PUT', f'/_matrix/client/v3/profile/{user_id}/displayname', {'displayname': display_name})
+    response, code = api_query('PUT', f'/_matrix/client/v3/profile/{user_id}/displayname', {'displayname': display_name}, user_id=user_id)
     if code != 200:
         print(f"Error while setting display name for {user_id}: {response}", file=sys.stderr)
     return code == 200
