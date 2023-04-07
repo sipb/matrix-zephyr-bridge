@@ -6,6 +6,7 @@ from util import get_zephyr_location, get_zephyr_user, create_zephyr_room_if_nee
 import sys
 import matrix
 from constants import *
+from zephyr_client import Zephyr
 
 app = Flask(__name__)
 
@@ -24,7 +25,7 @@ def process_events(txn_id):
             if not zephyr_location:
                 print(f"Not bridging unknown event from {event.sender} in {event.room_id}", file=sys.stderr)
             cls, instance = zephyr_location
-            send_zephyr_message(
+            Zephyr.send_message(
                 message=event.content['body'], # TODO: handle formatting, m.emote, etc
                 cls=cls,
                 instance=instance,

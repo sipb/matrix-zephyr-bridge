@@ -54,10 +54,14 @@ class Zephyr:
         self._subscribe(triplet)
     
 
+    @staticmethod
     def send_message(self, message, cls=DEFAULT_CLASS, instance=DEFAULT_INSTANCE, opcode=DEFAULT_OPCODE, sender=None, display_name=None):
         """
         Send a Zephyr message to the given class and instance
         """
+        # To allow static calls, seems no harm to call it multiple times
+        zephyr.init()
+
         # Set signature to sender if not given
         if display_name is None:
             display_name = sender
