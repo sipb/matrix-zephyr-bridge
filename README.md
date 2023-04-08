@@ -31,8 +31,9 @@ This is a Matrix application service which will automatically create rooms as ne
  - [x] Bridge specific instances
  - [ ] Bridge all instances of specific class
  - [x] Zephyr signatures <-> Matrix display name
- - [ ] Ignore messages from specific hosts (such as mattermost.mit.edu, to avoid double bridging)
+ - [x] Ignore messages from specific hosts (such as mattermost.mit.edu, to avoid double bridging)
  - [ ] Import Gravatar/Zulip profile pictures
+ - [ ] Zephyr->Matrix metadata (whether the message is authentic, mostly)
  - [ ] Support authentic messages (using Webathena tickets)
  - [ ] Support unauthenticated DMs (via bot account as proxy)
  - [ ] Support authenticated DMs (via user through Webathena tickets)
