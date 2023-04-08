@@ -120,7 +120,13 @@ def on_zephyr_message(message: zephyr.ZNotice):
 
 
 if __name__ == '__main__':
+    import os
     while True:
-        msg: zephyr.ZNotice = zephyr.receive(True)
-        if msg is not None:
-            on_zephyr_message(msg)
+        # Catch zephyr exceptions at the top level
+        try:
+            msg: zephyr.ZNotice = zephyr.receive(True)
+            if msg is not None:
+                on_zephyr_message(msg)
+        except OSError as e:
+            os.system("kinit daemon/matrix.mit.edu@ATHENA.MIT.EDU -k -t daemon_matrix.keytab")
+            print(f"ZEPHYR ERROR: {e}")
