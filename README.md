@@ -29,16 +29,19 @@ This is a Matrix application service which will automatically create rooms as ne
 ## Roadmap
 
  - [x] Bridge specific instances
- - [ ] Bridge all instances of specific class
+ - [ ] Bridge all instances of specific class (to space)
+ - [ ] Bridge all instances of specific class (to consolidated room)
  - [x] Zephyr signatures <-> Matrix display name
- - [x] Ignore messages from specific hosts (such as mattermost.mit.edu, to avoid double bridging)
+ - [x] Ignore messages from specific ~~hosts~~ opcodes (such as ~~mattermost.mit.edu~~ mattermost, to avoid double bridging)
  - [x] Zephyr->Matrix metadata (authenticity and timestamp)
- - [ ] Import Gravatar/Zulip profile pictures
+ - [x] Matrix->Zephyr images, stickers, etc via URL
  - [ ] Support unclasses and `.d` instances (convention for off-topic conversations) (bridge as threads?)
- - [ ] Matrix->Zephyr images, stickers, etc via URL
  - [ ] Matrix->Zephyr formatting (HTML/MD to custom Zephyr syntax)
+ - [ ] Matrix->Zephyr spoilers
  - [ ] Zephyr->Matrix formatting (parse custom Zephyr syntax into HTML)
  - [ ] Render Matrix->Zephyr replies in a reasonable format, even if it is no mention of original message at all (or a chopped version)
+ - [ ] Import Gravatar/Zulip profile pictures
+ - [ ] Zulip->Matrix images and files
  - [ ] Support authentic messages (using Webathena tickets)
  - [ ] Support unauthenticated DMs (via bot account as proxy)
  - [ ] Support authenticated DMs (via user through Webathena tickets)
@@ -48,3 +51,19 @@ Features that Zephyr does not support:
 
  - ~~[ ] Matrix->Zephyr reactions(?) (SMS-style message + AUTO opcode)~~ (not planned, probably a bad idea)
  - [ ] Matrix->Zephyr edits and deletions(?) (probably like reactions, send a text message explaining the change)
+
+
+## Appendix: media_base_url
+
+What to set `media_base_url` to?
+
+If unspecified, it will redirect to the endpoint of your homeserver URL.
+
+If you wish to simplify the endpoint, and you run nginx on your homeserver, you can add the following lines before the Synapse reverse proxying configuration:
+
+```conf
+# Easier MXC URLs
+location /media/ {
+    rewrite ^/media/(.*)$ /_matrix/media/v3/download/uplink.mit.edu/$1 last;
+}
+```

@@ -2,7 +2,7 @@ from flask import Flask, request, Response
 from decorators import *
 from events import ClientEvent
 from config import config
-from util import get_zephyr_location, get_zephyr_user, create_zephyr_room, get_zephyr_localpart
+from util import get_zephyr_location, get_zephyr_user, create_zephyr_room, mxc_to_url
 import sys
 import matrix
 from constants import *
@@ -23,13 +23,28 @@ def process_events(txn_id):
         # Ignore our own messages!
         if event.sender.startswith('@' + config.zephyr_user_prefix):
             return {}, 200
-        if event.type == 'm.room.message':
+        if event.type == 'm.room.message' or event.type == 'm.sticker':
+            message_type = event.content.get('msgtype')
+            zephyr_content = event.content['body']
             zephyr_location = get_zephyr_location(event.room_id)
             if not zephyr_location:
                 print(f"Not bridging unknown event from {event.sender} in {event.room_id}", file=sys.stderr)
+            
+            # Handle "emotes"
+            if message_type == 'm.emote':
+                zephyr_content = '/me ' + zephyr_content
+            # Handle media
+            if event.type == 'm.sticker' or message_type in ('m.image', 'm.file', 'm.audio'):
+                # Zulip likes the Markdown format and it should be readable enough for other clients
+                # although (TODO: investigate) Zulip ignores our Markdown even if it has the same format
+                # maybe here? https://github.com/zulip/zulip/blob/946b4e73ca6dbc34788b8799d9d8de04a2b17809/web/src/markdown.js#L99
+                # Either way, I guess this is good enough
+                zephyr_content = f"[{zephyr_content}]({mxc_to_url(event.content.get('url'))})"
+
             cls, instance = zephyr_location
+            print(cls, instance, zephyr_content)
             Zephyr.send_message(
-                message=event.content['body'], # TODO: handle formatting, m.emote, etc
+                message=zephyr_content, # TODO: handle formatting, m.emote, etc
                 cls=cls,
                 instance=instance,
                 display_name=matrix.get_room_display_name(event.room_id, event.sender),

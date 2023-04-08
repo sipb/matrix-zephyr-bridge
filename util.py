@@ -121,3 +121,11 @@ def timestamp_zephyr_to_matrix(zephyr_ts):
     (seconds to milliseconds)
     """
     return round(zephyr_ts * 1000)
+
+
+def mxc_to_url(mxc_uri):
+    homeserver, media_id = mxc_uri.split('/')[2:]
+    if config.media_base_url and homeserver == config.homeserver:
+        return config.media_base_url + media_id
+    else:
+        return f'{config.homeserver_url}/_matrix/media/v3/download/{homeserver}/{media_id}'

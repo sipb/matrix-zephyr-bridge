@@ -43,6 +43,9 @@ class Config:
     # (this was going to be blocked hosts but it seems very hard to implement)
     blocked_opcodes: Optional[tuple[str]] = ("matrix",)
 
+    # Media shortened prefix
+    media_base_url: Optional[str] = None
+
 
 config: Config = Config.from_dict(yaml.load(open("config.yaml", "r"), yaml.Loader))
 
