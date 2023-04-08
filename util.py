@@ -11,7 +11,7 @@ def get_zephyr_localpart(cls, instance):
     return f'{config.zephyr_room_prefix}{cls}{config.class_instance_separator}{instance}'
 
 
-def create_zephyr_room_if_needed(cls, instance):
+def create_zephyr_room(cls, instance):
     """
     Create a Matrix room corresponding to the given Zephyr class and instance
     (or do nothing if it already exists). 
@@ -21,12 +21,8 @@ def create_zephyr_room_if_needed(cls, instance):
     Returns the room ID of the new (or existing) room (or None)
     """
     alias_localpart = get_zephyr_localpart(cls, instance)
-    id_if_already_exists = matrix.get_room_id(f'#{alias_localpart}:{config.homeserver}')
-    if id_if_already_exists:
-        return id_if_already_exists
-    
-    # Subscribe to the room
 
+    # Subscribe to the room
     # (ab)use command capability of the other half of the bridge
     # TODO: switch to sqlite if sqlite is needed for something else in here
     # (sqlite allows multiple people writing the database at once and listening for changes)

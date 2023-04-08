@@ -2,7 +2,7 @@ import zephyr
 import sys
 from constants import *
 from zephyr_client import Zephyr
-from util import strip_default_realm, create_zephyr_room_if_needed, get_zephyr_localpart
+from util import strip_default_realm, create_zephyr_room, get_zephyr_localpart
 from config import config
 import matrix
 
@@ -91,13 +91,14 @@ def on_zephyr_message(message: zephyr.ZNotice):
 
     # TODO: handle lack of success ↓
 
+    room_alias = f'#{get_zephyr_localpart(message.cls, message.instance)}:{config.homeserver}'
+    
     # Create room (if needed)
-    create_zephyr_room_if_needed(message.cls, message.instance)
+    if not matrix.get_room_id(room_alias):
+        create_zephyr_room(message.cls, message.instance)
     
     # Create user (if needed)
     matrix.create_user(f'{config.zephyr_user_prefix}{sender}')
-
-    room_alias = f'#{get_zephyr_localpart(message.cls, message.instance)}:{config.homeserver}'
     matrix_user_id = f'@{config.zephyr_user_prefix}{sender}:{config.homeserver}'
 
     # Join user to room (if needed)

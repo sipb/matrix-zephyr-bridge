@@ -2,7 +2,7 @@ from flask import Flask, request, Response
 from decorators import *
 from events import ClientEvent
 from config import config
-from util import get_zephyr_location, get_zephyr_user, create_zephyr_room_if_needed, get_zephyr_localpart
+from util import get_zephyr_location, get_zephyr_user, create_zephyr_room, get_zephyr_localpart
 import sys
 import matrix
 from constants import *
@@ -49,10 +49,10 @@ def create_instance_room(cls, instance):
     # TODO: handle special characters by following this encoding:
     # https://spec.matrix.org/v1.5/appendices/#mapping-from-other-character-sets
     # and convert to and from the format in all relevant places
-    
-    room_id = create_zephyr_room_if_needed(cls, instance)
+    print("Requested room", cls, instance)
+    room_id = create_zephyr_room(cls, instance)
     if not room_id:
-        return {'errcode': 'edu.sipb.mit.unknown'}, 500
+        return {'errcode': 'edu.mit.sipb.unknown'}, 500
     print("Done creating", cls, instance)
     return {}
 

@@ -47,7 +47,12 @@ def api_query(method: str, path: str, body=None, params=None, user_id=None):
     )
 
     # TODO: this may throw an error if not JSON
-    return json.loads(response.content.decode()), response.status_code
+    response_content = response.content.decode()
+    try:
+        return json.loads(response_content), response.status_code
+    except json.JSONDecodeError:
+        print(f"Query {path} returned invalid JSON: {response_content}", file=sys.stderr)
+        return {'response': response_content}, response.status_code
     
 
 def get_state_event(room_id, event_type, state_key='') -> dict:
@@ -85,6 +90,7 @@ def get_room_id(room_alias: str) -> str:
         .replace('#', '%23') \
         .replace(':', '%3A')
 
+    # TODO: add a reasonable timeout. this is taking a while idk why
     response, code = api_query('GET', f'/_matrix/client/v3/directory/room/{room_alias_encoded}')
     if code == 404:
         return None
