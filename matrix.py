@@ -129,7 +129,10 @@ def get_global_display_name(user_id) -> str | None:
     Gets the display name of the given user,joining globally
     or None if can't find
     """
-    response, code = api_query('GET', f'/_matrix/client/v3/profile/{user_id}/displayname')
+    # Some kerbs have slashes on them
+    user_id_encoded = user_id.replace('/', '%2F')
+
+    response, code = api_query('GET', f'/_matrix/client/v3/profile/{user_id_encoded}/displayname')
     if code != 200:
         print(f"Error while getting display name for {user_id}: {response}", file=sys.stderr)
     return response.get('displayname')
@@ -140,7 +143,10 @@ def set_global_display_name(user_id, display_name) -> bool:
     Sets the displayname of the given user,
     returns True/False depending on success
     """
-    response, code = api_query('PUT', f'/_matrix/client/v3/profile/{user_id}/displayname', {'displayname': display_name}, user_id=user_id)
+    # Some kerbs have slashes on them
+    user_id_encoded = user_id.replace('/', '%2F')
+
+    response, code = api_query('PUT', f'/_matrix/client/v3/profile/{user_id_encoded}/displayname', {'displayname': display_name}, user_id=user_id)
     if code != 200:
         print(f"Error while setting display name for {user_id}: {response}", file=sys.stderr)
     return code == 200
