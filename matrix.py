@@ -14,12 +14,12 @@ def get_unique_transaction_id():
     return str(uuid.uuid4())
 
 
-def api_query(method: str, path: str, body=None, params=None, user_id=None):
+def api_query(method: str, path: str, body=None, params=None, user_id=None, timestamp=None):
     """
     Make a query to the REST API with given method and path (must begin with /).
 
-    Allows overriding the username using the client-server API extension
-    for application services.
+    Allows overriding the username and timestamp using the client-server API
+    extensions for application services.
 
     Returns a tuple with response (JSON) and status code
     """
@@ -35,6 +35,8 @@ def api_query(method: str, path: str, body=None, params=None, user_id=None):
 
     if user_id is not None:
         params |= {'user_id': user_id}
+    if timestamp is not None:
+        params |= {'ts': timestamp}
 
     response = requests.request(
         method=method,
@@ -159,7 +161,7 @@ def join_room(room_id: str, user_id: str) -> bool:
     return code == 200
 
 
-def send_text_message(room_id, user_id, message):
+def send_text_message(room_id, user_id, message, is_authentic, timestamp):
     """
     Send a simple text message to the given room
     """
@@ -167,15 +169,20 @@ def send_text_message(room_id, user_id, message):
     if room_id.startswith('#'):
         room_id = get_room_id(room_id)
 
+    body = {
+        'body': message,
+        'msgtype': 'm.text',
+    }
+    if is_authentic is not None:
+        body |= {'im.zephyr.authentic': is_authentic}
+    
     # TODO: extract into a function to send events in general
     response, code = api_query(
         'PUT',
         f'/_matrix/client/v3/rooms/{room_id}/send/m.room.message/{get_unique_transaction_id()}',
         user_id=user_id,
-        body={
-            'body': message,
-            'msgtype': 'm.text',
-        }
+        body=body,
+        timestamp=timestamp,
     )
     if code != 200:
         print(f"Error while sending message from {user_id} to {room_id}: {response}", file=sys.stderr)

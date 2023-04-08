@@ -32,19 +32,19 @@ This is a Matrix application service which will automatically create rooms as ne
  - [ ] Bridge all instances of specific class
  - [x] Zephyr signatures <-> Matrix display name
  - [x] Ignore messages from specific hosts (such as mattermost.mit.edu, to avoid double bridging)
+ - [x] Zephyr->Matrix metadata (authenticity and timestamp)
  - [ ] Import Gravatar/Zulip profile pictures
- - [ ] Zephyr->Matrix metadata (whether the message is authentic, mostly)
- - [ ] Support authentic messages (using Webathena tickets)
- - [ ] Support unauthenticated DMs (via bot account as proxy)
- - [ ] Support authenticated DMs (via user through Webathena tickets)
  - [ ] Support unclasses and `.d` instances (convention for off-topic conversations) (bridge as threads?)
  - [ ] Matrix->Zephyr images, stickers, etc via URL
  - [ ] Matrix->Zephyr formatting (HTML/MD to custom Zephyr syntax)
  - [ ] Zephyr->Matrix formatting (parse custom Zephyr syntax into HTML)
+ - [ ] Render Matrix->Zephyr replies in a reasonable format, even if it is no mention of original message at all (or a chopped version)
+ - [ ] Support authentic messages (using Webathena tickets)
+ - [ ] Support unauthenticated DMs (via bot account as proxy)
+ - [ ] Support authenticated DMs (via user through Webathena tickets)
  - [ ] (only if you file an issue/PR) Test that this works for other Zephyrs outside of ATHENA.MIT.EDU
 
 Features that Zephyr does not support:
 
- - [ ] Matrix->Zephyr reactions(?) (SMS-style message + AUTO opcode)
+ - ~~[ ] Matrix->Zephyr reactions(?) (SMS-style message + AUTO opcode)~~ (not planned, probably a bad idea)
  - [ ] Matrix->Zephyr edits and deletions(?) (probably like reactions, send a text message explaining the change)
- - [ ] Matrix->Zephyr replies(?) (perhaps a text saying "in reply to"?)

@@ -2,7 +2,7 @@ import zephyr
 import sys
 from constants import *
 from zephyr_client import Zephyr
-from util import strip_default_realm, create_zephyr_room, get_zephyr_localpart
+from util import strip_default_realm, create_zephyr_room, get_zephyr_localpart, timestamp_zephyr_to_matrix
 from config import config
 import matrix
 
@@ -92,7 +92,7 @@ def on_zephyr_message(message: zephyr.ZNotice):
     # TODO: handle lack of success ↓
 
     room_alias = f'#{get_zephyr_localpart(message.cls, message.instance)}:{config.homeserver}'
-    
+
     # Create room (if needed)
     if not matrix.get_room_id(room_alias):
         create_zephyr_room(message.cls, message.instance)
@@ -114,7 +114,9 @@ def on_zephyr_message(message: zephyr.ZNotice):
     matrix.send_text_message(
         room_id=room_alias,
         message=content,
-        user_id=f'@{config.zephyr_user_prefix}{sender}:{config.homeserver}'
+        user_id=f'@{config.zephyr_user_prefix}{sender}:{config.homeserver}',
+        is_authentic=message.auth,
+        timestamp=timestamp_zephyr_to_matrix(message.time),
     )
     
     print(f"Sent [-c {msg.cls} -i {msg.instance}] {content}")

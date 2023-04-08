@@ -29,6 +29,11 @@ def create_zephyr_room(cls, instance):
     Zephyr.send_message(f"add {cls} {instance} *", opcode=DEFAULT_OPCODE, recipient=OWN_KERB)
 
     # TODO: tweak room options for good user experience (history visibility, public, do we want federation? etc)
+
+    # For instance you can set "who can read history?" to "everyone" instead of "members, all messages" (current)
+    # or to members, but only history since joining (which would reflect the zephyr behavior), but the point
+    # is also what is the best? as opposed to respecting the way zephyr works 1:1
+    # Well, I think that having to join is a reasonable compromise
     return matrix.create_room(
         alias_localpart=alias_localpart,
         name=f'-c {cls} -i {instance}', # TODO: use a friendlier name
@@ -100,3 +105,19 @@ def strip_default_realm(user: str):
         return user[:-len(DEFAULT_REALM)-1]
     else:
         return user
+
+
+def timestamp_matrix_to_zephyr(matrix_ts):
+    """
+    Convert a Matrix timestamp to a Zephyr timestamp
+    (milliseconds to seconds)
+    """
+    return matrix_ts / 1000
+
+
+def timestamp_zephyr_to_matrix(zephyr_ts):
+    """
+    Convert a Zephyr timestamp to a Matrix timestamp
+    (seconds to milliseconds)
+    """
+    return round(zephyr_ts * 1000)
