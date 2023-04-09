@@ -101,14 +101,14 @@ def on_zephyr_message(message: zephyr.ZNotice):
     matrix.create_user(f'{config.zephyr_user_prefix}{sender}')
     matrix_user_id = f'@{config.zephyr_user_prefix}{sender}:{config.homeserver}'
 
-    # Join user to room (if needed)
-    # TODO: check if in room, then join only if not
-    matrix.join_room(room_alias, matrix_user_id)
-
     # Adjust display name (if needed)
     current_matrix_name = matrix.get_global_display_name(matrix_user_id)
     if display_name and current_matrix_name != display_name:
         matrix.set_global_display_name(matrix_user_id, display_name)
+
+    # Join user to room (if needed)
+    # TODO: check if in room, then join only if not
+    matrix.join_room(room_alias, matrix_user_id)
 
     # Send message!
     matrix.send_text_message(
