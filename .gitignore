@@ -1,3 +1,6 @@
+# Keytab
+*.keytab
+
 # Zephyr subs
 zephyr.subs
 

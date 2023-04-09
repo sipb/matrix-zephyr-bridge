@@ -31,7 +31,9 @@ This is a Matrix application service which will automatically create rooms as ne
  - [x] Bridge specific instances
  - [ ] Bridge all instances of specific class (to space)
  - [ ] Bridge all instances of specific class (to consolidated room)
+ - [ ] Make bridge easy to use by providing a DM interface and/or a web interface
  - [x] Zephyr signatures <-> Matrix display name
+ - [ ] Is that the best way though? Some people have random quotes in their zsigs
  - [x] Ignore messages from specific ~~hosts~~ opcodes (such as ~~mattermost.mit.edu~~ mattermost, to avoid double bridging)
  - [x] Zephyr->Matrix metadata (authenticity and timestamp)
  - [x] Matrix->Zephyr images, stickers, etc via URL
