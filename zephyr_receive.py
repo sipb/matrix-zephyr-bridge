@@ -2,7 +2,7 @@ import zephyr
 import sys
 from constants import *
 from zephyr_client import Zephyr
-from util import strip_default_realm, create_zephyr_room, get_zephyr_localpart, timestamp_zephyr_to_matrix
+from util import strip_default_realm, create_zephyr_room, get_zephyr_localpart, timestamp_zephyr_to_matrix, renew_kerberos_tickets
 from config import config
 import matrix
 
@@ -131,5 +131,5 @@ if __name__ == '__main__':
             if msg is not None:
                 on_zephyr_message(msg)
         except OSError as e:
-            os.system("kinit daemon/matrix.mit.edu@ATHENA.MIT.EDU -k -t daemon_matrix.keytab")
+            renew_kerberos_tickets()
             print(f"ZEPHYR ERROR: {e}")

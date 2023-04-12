@@ -3,6 +3,14 @@ import sys
 import matrix
 from zephyr_client import Zephyr
 from constants import *
+import os
+
+def renew_kerberos_tickets():
+    """
+    Get new working kerberos tickets
+    """
+    os.system("kinit daemon/matrix.mit.edu@ATHENA.MIT.EDU -k -t daemon_matrix.keytab")
+
 
 def get_zephyr_localpart(cls, instance):
     """
