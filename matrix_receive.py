@@ -22,7 +22,11 @@ def process_events(txn_id):
     for event in events:
         # Ignore our own messages!
         if event.sender.startswith('@' + config.zephyr_user_prefix):
-            return {}, 200
+            continue
+        # Ignore banned usernames (for other bridges)
+        for mxid_prefix in config.blocked_mxid_prefixes:
+            if event.sender.startswith('@' + mxid_prefix):
+                continue
         if event.type == 'm.room.message' or event.type == 'm.sticker':
             message_type = event.content.get('msgtype')
             zephyr_content = event.content['body']

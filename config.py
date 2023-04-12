@@ -46,6 +46,10 @@ class Config:
     # Media shortened prefix
     media_base_url: Optional[str] = None
 
+    # Block MXIDs from being bridged
+    # To prevent double-bridging messages from Mattermost bridge
+    blocked_mxid_prefixes: Optional[tuple[str]] = ("mattermost", "_mattermost_")
+
 
 config: Config = Config.from_dict(yaml.load(open("config.yaml", "r"), yaml.Loader))
 

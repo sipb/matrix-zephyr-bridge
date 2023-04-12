@@ -29,6 +29,12 @@ blocked_opcodes:
   - matrix
   - mattermost
 
+# Block certain Matrix MXIDs from being bridged
+# Give prefixes here
+blocked_mxid_prefixes:
+  - mattermost
+  - _mattermost_
+
 # The prefixes to claim (uncomment to change)
 
 #zephyr_user_prefix: _zephyr_
