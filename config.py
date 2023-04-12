@@ -50,6 +50,9 @@ class Config:
     # To prevent double-bridging messages from Mattermost bridge
     blocked_mxid_prefixes: Optional[tuple[str]] = ("mattermost", "_mattermost_")
 
+    # Block certain Zephyr usernames from being bridged
+    blocked_zephyr_usernames: Optional[tuple[str]] = ("mattermost", "matrix")
+
 
 config: Config = Config.from_dict(yaml.load(open("config.yaml", "r"), yaml.Loader))
 

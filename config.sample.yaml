@@ -35,6 +35,11 @@ blocked_mxid_prefixes:
   - mattermost
   - _mattermost_
 
+# Block certain Zephyr usernames
+blocked_zephyr_usernames:
+  - matrix
+  - mattermost
+
 # The prefixes to claim (uncomment to change)
 
 #zephyr_user_prefix: _zephyr_

@@ -74,6 +74,11 @@ def on_zephyr_message(message: zephyr.ZNotice):
     if message.opcode in config.blocked_opcodes:
         print(f"Not bridging blocked opcode: {message.opcode}")
         return
+    
+    # Ignore messages from Mattermost user
+    if sender in config.blocked_zephyr_usernames:
+        print(f"Not bridging blocked sender: {message.sender}")
+        return
 
     # Treat empty signature as just kerb
     if display_name == '':
