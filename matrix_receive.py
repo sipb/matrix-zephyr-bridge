@@ -24,11 +24,12 @@ def process_events(txn_id):
     for event in events:
         # Ignore our own messages!
         if event.sender.startswith('@' + config.zephyr_user_prefix):
+            print('Not bridging own message')
             continue
         # Ignore banned usernames (for other bridges)
-        for mxid_prefix in config.blocked_mxid_prefixes:
-            if event.sender.startswith('@' + mxid_prefix):
-                continue
+        if any(event.sender.startswith('@' + mxid_prefix) for mxid_prefix in config.blocked_mxid_prefixes):
+            print('Not bridging banned prefix')
+            continue
         if event.type == 'm.room.message' or event.type == 'm.sticker':
             message_type = event.content.get('msgtype')
             zephyr_content = event.content['body']
@@ -48,7 +49,7 @@ def process_events(txn_id):
                 zephyr_content = f"[{zephyr_content}]({mxc_to_url(event.content.get('url'))})"
 
             cls, instance = zephyr_location
-            print(cls, instance, zephyr_content)
+            print(cls, instance, event.sender, zephyr_content)
             Zephyr.send_message(
                 message=zephyr_content, # TODO: handle formatting, m.emote, etc
                 cls=cls,

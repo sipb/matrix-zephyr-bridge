@@ -46,11 +46,11 @@ class Config:
     # Media shortened prefix
     media_base_url: Optional[str] = None
 
-    # Block MXIDs from being bridged
+    # Block MXIDs from being bridged to Zephyr
     # To prevent double-bridging messages from Mattermost bridge
     blocked_mxid_prefixes: Optional[tuple[str]] = ("mattermost", "_mattermost_")
 
-    # Block certain Zephyr usernames from being bridged
+    # Block certain Zephyr usernames from being bridged to Matrix
     blocked_zephyr_usernames: Optional[tuple[str]] = ("mattermost", "matrix")
 
 
