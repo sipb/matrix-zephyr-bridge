@@ -47,6 +47,8 @@ def process_events(txn_id):
                 # maybe here? https://github.com/zulip/zulip/blob/946b4e73ca6dbc34788b8799d9d8de04a2b17809/web/src/markdown.js#L99
                 # Either way, I guess this is good enough
                 zephyr_content = f"[{zephyr_content}]({mxc_to_url(event.content.get('url'))})"
+                if message_type == 'm.image':
+                    zephyr_content = '!' + zephyr_content
 
             cls, instance = zephyr_location
             print(cls, instance, event.sender, zephyr_content)
