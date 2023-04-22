@@ -107,11 +107,8 @@ def on_zephyr_message(message: zephyr.ZNotice):
     matrix.create_user(f'{config.zephyr_user_prefix}{sender}')
     matrix_user_id = f'@{config.zephyr_user_prefix}{sender}:{config.homeserver}'
 
-    # Get display name (currently just the kerb)
-    # NOTE: other bridges add the platform so I'll follow along for now
-    # This also avoids Element displaying its "disambiguation" UI because people may talk on both platforms
-    # and thus have the same kerb on both places
-    display_name = sender + ' (Zephyr)'
+    # Get display name (currently just the kerb, subject to change)
+    display_name = sender
 
     # Adjust display name (if needed)
     current_matrix_name = matrix.get_global_display_name(matrix_user_id)
