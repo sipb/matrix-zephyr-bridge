@@ -2,7 +2,8 @@ import zephyr
 import sys
 from constants import *
 from zephyr_client import Zephyr
-from util import strip_default_realm, create_zephyr_room, get_zephyr_localpart, timestamp_zephyr_to_matrix, renew_kerberos_tickets
+from util import strip_default_realm, create_zephyr_room, get_zephyr_localpart, timestamp_zephyr_to_matrix
+from kerberos import renew_kerberos_tickets
 from config import config
 import matrix
 

@@ -2,7 +2,8 @@ from flask import Flask, request, Response
 from decorators import *
 from events import ClientEvent
 from config import config
-from util import get_zephyr_location, get_zephyr_user, create_zephyr_room, mxc_to_url, renew_kerberos_tickets
+from util import get_zephyr_location, get_zephyr_user, create_zephyr_room, mxc_to_url
+from kerberos import renew_kerberos_tickets
 import sys
 import matrix
 from constants import *

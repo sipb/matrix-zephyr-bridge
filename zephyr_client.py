@@ -1,5 +1,6 @@
 import zephyr
 from constants import *
+from kerberos import renew_kerberos_tickets
 
 # Zephyr client
 
@@ -27,8 +28,7 @@ class Zephyr:
 
     def __init__(self):
         self._entire_class_subscriptions = set()
-        # TODO: run kinit otherwise SERVNAK
-        # and figure out how to do that regularly?
+        renew_kerberos_tickets()
         zephyr.init()
         self._subscriptions = zephyr.Subscriptions()
         with open(ZEPHYR_SUBSCRIPTIONS_FILE, 'r') as f:
@@ -93,9 +93,3 @@ class Zephyr:
             auth=False,
         )
         notice.send()
-
-
-
-
-
-
