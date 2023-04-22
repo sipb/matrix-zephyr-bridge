@@ -61,14 +61,14 @@ def on_zephyr_message(message: zephyr.ZNotice):
     # Make sure message has 2 (usually) or 1 (rare) fields
     if len(message.fields) == 1:
         # In my testing, some messages without signature were sent as one field
-        display_name = sender
+        signature = sender
         content = message.fields[0]
     elif len(message.fields) != 2:
         print(f"Message does not have 1 or 2 fields, skipping!", file=sys.stderr)
         print(message.__dict__, file=sys.stderr)
         return
 
-    display_name, content = message.fields
+    signature, content = message.fields
     
     # Respect blocked opcodes
     if message.opcode in config.blocked_opcodes:
@@ -81,8 +81,8 @@ def on_zephyr_message(message: zephyr.ZNotice):
         return
 
     # Treat empty signature as just kerb
-    if display_name == '':
-        display_name = sender
+    if signature == '':
+        signature = sender
 
     # This is a DM! 
     if message.cls == DEFAULT_CLASS and message.instance == DEFAULT_INSTANCE:
@@ -91,7 +91,7 @@ def on_zephyr_message(message: zephyr.ZNotice):
             print(f"Handling command from {sender}")
             z.send_message(handle_bot_command(content, sender), recipient=sender)
         else:
-            print(f"Skipped DM from {sender} ({display_name}) to {recipient}:\n{content}", file=sys.stderr)
+            print(f"Skipped DM from {sender} ({signature}) to {recipient}:\n{content}", file=sys.stderr)
         return
 
     # TODO: handle lack of success ↓
@@ -105,6 +105,12 @@ def on_zephyr_message(message: zephyr.ZNotice):
     # Create user (if needed)
     matrix.create_user(f'{config.zephyr_user_prefix}{sender}')
     matrix_user_id = f'@{config.zephyr_user_prefix}{sender}:{config.homeserver}'
+
+    # Get display name (currently just the kerb)
+    # NOTE: other bridges add the platform so I'll follow along for now
+    # This also avoids Element displaying its "disambiguation" UI because people may talk on both platforms
+    # and thus have the same kerb on both places
+    display_name = sender + ' (Zephyr)'
 
     # Adjust display name (if needed)
     current_matrix_name = matrix.get_global_display_name(matrix_user_id)
@@ -120,7 +126,10 @@ def on_zephyr_message(message: zephyr.ZNotice):
         room_id=room_alias,
         message=content,
         user_id=f'@{config.zephyr_user_prefix}{sender}:{config.homeserver}',
-        is_authentic=message.auth,
+        additional_metadata={
+            'im.zephyr.authentic': message.auth,
+            'im.zephyr.signature': signature,
+        },
         timestamp=timestamp_zephyr_to_matrix(message.time),
     )
     

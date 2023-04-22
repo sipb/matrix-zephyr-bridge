@@ -167,7 +167,7 @@ def join_room(room_id: str, user_id: str) -> bool:
     return code == 200
 
 
-def send_text_message(room_id, user_id, message, is_authentic, timestamp):
+def send_text_message(room_id, user_id, message, additional_metadata, timestamp):
     """
     Send a simple text message to the given room
     """
@@ -179,8 +179,7 @@ def send_text_message(room_id, user_id, message, is_authentic, timestamp):
         'body': message,
         'msgtype': 'm.text',
     }
-    if is_authentic is not None:
-        body |= {'im.zephyr.authentic': is_authentic}
+    body |= additional_metadata
     
     # TODO: extract into a function to send events in general
     response, code = api_query(
