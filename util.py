@@ -9,6 +9,11 @@ def get_zephyr_localpart(cls, instance):
     """
     Gets the localpart to use for the room with given Zephyr class and instance
     """
+
+    # Ensure we use lowercase
+    cls = cls.lower()
+    instance = instance.lower()
+
     return f'{config.zephyr_room_prefix}{cls}{config.class_instance_separator}{instance}'
 
 
@@ -73,9 +78,6 @@ def get_zephyr_location(mxid: str) -> tuple[str] | bool:
     """
     Get Zephyr class and instance for the given Matrix
     room ID, or False if not found
-
-    Behavior is currently hardcoded to parsing the format
-    #z/classname/instancename (with prefix and separator in config)
     """
     # Resolve canonical ID
     if mxid.startswith('!'):

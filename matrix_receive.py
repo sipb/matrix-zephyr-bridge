@@ -75,6 +75,11 @@ def create_instance_room(cls, instance):
     # https://spec.matrix.org/v1.5/appendices/#mapping-from-other-character-sets
     # and convert to and from the format in all relevant places
     print("Requested room", cls, instance)
+    
+    # Only allow lowercase class/instance names
+    if any(c.isupper() for c in cls+instance):
+        return {'errcode': 'edu.mit.sipb.uppercase_found', 'error': 'Class and instance names must be in lowercase'}, 404
+    
     room_id = create_zephyr_room(cls, instance)
     if not room_id:
         return {'errcode': 'edu.mit.sipb.unknown'}, 500
