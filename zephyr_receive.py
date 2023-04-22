@@ -122,7 +122,7 @@ def on_zephyr_message(message: zephyr.ZNotice):
     # Send message!
     matrix.send_text_message(
         room_id=room_alias,
-        message=content,
+        message=content.rstrip('\n'), # remove trailing new lines
         user_id=f'@{config.zephyr_user_prefix}{sender}:{config.homeserver}',
         additional_metadata={
             'im.zephyr.authentic': message.auth,
