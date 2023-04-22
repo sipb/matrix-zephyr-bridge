@@ -18,6 +18,8 @@ This bridge is 2 halves: the Matrix-to-Zephyr half is a Flask REST API located o
 
 This is a Matrix application service which will automatically create rooms as needed.
 
+**NOTE**: Due to case insensitivity, you must type class and instance names using lowercase.
+
 * To join the zephyr room for the class `sipb` and instance `other`, ask your Matrix client to join the room `#z/sipb/other:matrix.mit.edu`. If it does not exist on the Matrix side, the bridge will automatically subscribe to it and start bridging all future messages from and to Zephyr.*
 
 * To subscribe to all instances of the class `sipb`, you can ask your Matrix client to join the room `#Z/sipb:matrix.mit.edu`. This will be a **space** containing a room for each instance (_not implemented yet_).
@@ -32,8 +34,9 @@ This is a Matrix application service which will automatically create rooms as ne
  - [ ] Bridge all instances of specific class (to space)
  - [ ] Bridge all instances of specific class (to consolidated room)
  - [ ] Make bridge easy to use by providing a DM interface and/or a web interface
- - [x] Zephyr signatures <-> Matrix display name
- - [ ] Is that the best way though? Some people have random quotes in their zsigs
+ - [x] Zephyr signatures <-> Matrix metadata
+ - [ ] Zephyr signatures <-> Matrix display names if display name is similar enough
+ - [ ] Add bot command on Zephyr to set display name on Matrix
  - [x] Ignore messages from specific ~~hosts~~ opcodes (such as ~~mattermost.mit.edu~~ mattermost, to avoid double bridging)
  - [x] Zephyr->Matrix metadata (authenticity and timestamp)
  - [x] Matrix->Zephyr images, stickers, etc via URL
@@ -44,9 +47,9 @@ This is a Matrix application service which will automatically create rooms as ne
  - [ ] Render Matrix->Zephyr replies in a reasonable format, even if it is no mention of original message at all (or a chopped version)
  - [ ] Import Gravatar/Zulip profile pictures
  - [ ] Zulip->Matrix images and files
- - [ ] Support authentic messages (using Webathena tickets)
- - [ ] Support unauthenticated DMs (via bot account as proxy)
- - [ ] Support authenticated DMs (via user through Webathena tickets)
+ - [ ] ~~Support unauthenticated DMs (via bot account as proxy)~~ Don't like this idea anymore
+ - [ ] Support sending and receiving DMs (via user through Webathena tickets, they will not necessarily be authentic)
+ - [ ] Support sending authentic messages (using Webathena tickets)
  - [ ] (only if you file an issue/PR) Test that this works for other Zephyrs outside of ATHENA.MIT.EDU
 
 Features that Zephyr does not support:
