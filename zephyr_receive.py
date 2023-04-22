@@ -2,7 +2,7 @@ import zephyr
 import sys
 from constants import *
 from zephyr_client import Zephyr
-from util import strip_default_realm, create_zephyr_room, get_zephyr_localpart, timestamp_zephyr_to_matrix
+from util import strip_default_realm, create_zephyr_room, get_zephyr_localpart, timestamp_zephyr_to_matrix, is_reasonable_signature
 from kerberos import renew_kerberos_tickets
 from config import config
 import matrix
@@ -107,8 +107,8 @@ def on_zephyr_message(message: zephyr.ZNotice):
     matrix.create_user(f'{config.zephyr_user_prefix}{sender}')
     matrix_user_id = f'@{config.zephyr_user_prefix}{sender}:{config.homeserver}'
 
-    # Get display name (currently just the kerb, subject to change)
-    display_name = sender
+    # Get display name (either kerb or signature if it looks close enough to Hesiod's name)
+    display_name = signature if is_reasonable_signature(sender, signature) else sender
 
     # Adjust display name (if needed)
     current_matrix_name = matrix.get_global_display_name(matrix_user_id)

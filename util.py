@@ -3,6 +3,46 @@ import sys
 import matrix
 from zephyr_client import Zephyr
 from constants import *
+import dns.resolver
+
+def is_reasonable_signature(user, signature):
+    """
+    Whether the user's signature is reasonable to use as a display name
+    """
+
+    # This is a mere heuristic, which can be adapted to be made more useful
+
+    def canonicalize_name(name):
+        return [item for item in name.lower().replace('.', '').replace('-', ' ').split(' ') if len(item) > 1]
+
+    def names_similar(name1, name2):
+        name1 = canonicalize_name(name1)
+        name2 = canonicalize_name(name2)
+        return any(word1 == word2 for word1 in name1 for word2 in name2)
+
+    def get_hesiod_entries(type, name):
+        try:
+            answers = dns.resolver.resolve(f'{name}.{type}.ns.athena.mit.edu', 'TXT')
+            # it starts and ends with quotes, remove them
+            return [str(answer)[1:-1] for answer in answers]
+        except dns.resolver.NXDOMAIN:
+            return []
+
+    # IMPORTANT NOTE: This name should NOT be displayed. While we can trust cruft who
+    # are familiar with Athena to keep their finger name updated, it may have the wrong
+    # name for other people
+    # (Change your name here: https://web.mit.edu/rgabriel/names/
+    # or with `chfn.moira` on Athena)
+    def get_hesiod_name(user):
+        try:
+            results = get_hesiod_entries('passwd', user)
+            # zephyr.py in zulip
+            return results[0].split(':')[4].split(',')[0].strip()
+        except:
+            # If it does not work for any reason, we don't want the bridge to fail
+            return ''
+
+    return names_similar(signature, get_hesiod_name(user))
 
 
 def get_zephyr_localpart(cls, instance):
@@ -35,6 +75,8 @@ def create_zephyr_room(cls, instance):
     Zephyr.send_message(f"add {cls} {instance} *", opcode=DEFAULT_OPCODE, recipient=OWN_KERB)
 
     # TODO: tweak room options for good user experience (history visibility, public, do we want federation? etc)
+
+    # IMPORTANT: don't allow people remove aliases! that breaks the bot - power levels
 
     # For instance you can set "who can read history?" to "everyone" instead of "members, all messages" (current)
     # or to members, but only history since joining (which would reflect the zephyr behavior), but the point
