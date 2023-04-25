@@ -92,7 +92,6 @@ def get_room_id(room_alias: str) -> str:
         .replace('#', '%23') \
         .replace(':', '%3A')
 
-    # TODO: add a reasonable timeout. this is taking a while idk why
     response, code = api_query('GET', f'/_matrix/client/v3/directory/room/{room_alias_encoded}')
     if code == 404:
         return None
@@ -161,6 +160,8 @@ def join_room(room_id: str, user_id: str) -> bool:
     if room_id.startswith('#'):
         room_id = get_room_id(room_id)
     
+    # TODO: it would be one less API call to use https://spec.matrix.org/latest/client-server-api/#post_matrixclientv3joinroomidoralias
+
     response, code = api_query('POST', f'/_matrix/client/v3/rooms/{room_id}/join', user_id=user_id)
     if code != 200:
         print(f"Error while joining {user_id} to {room_id}: {response}", file=sys.stderr)
