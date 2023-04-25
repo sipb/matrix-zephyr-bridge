@@ -109,11 +109,9 @@ def get_zephyr_user(mxid: str):
     if user_homeserver == config.homeserver:
         return f'{user_localpart}@{DEFAULT_REALM}'
     
-    # Otherwise, just keep the mxid unchanged, since
-    # that does not mislead or let people impersonate MIT users by
-    # using accounts on other homeservers (at least from our bridge,
-    # coming from our hostname)
-    return mxid
+    # Otherwise, change the format so the homeserver simulates
+    # a realm
+    return '@'.join(mxid[1:].split(':', maxsplit=1))
 
 
 def get_zephyr_location(mxid: str) -> tuple[str] | bool:
