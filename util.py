@@ -72,11 +72,14 @@ def create_zephyr_room(cls, instance):
     # (ab)use command capability of the other half of the bridge
     # TODO: switch to sqlite if sqlite is needed for something else in here
     # (sqlite allows multiple people writing the database at once and listening for changes)
+    # (alternatively, they can share a Python process, like I did for the Mattermost bridge)
     Zephyr.send_message(f"add {cls} {instance} *", opcode=DEFAULT_OPCODE, recipient=OWN_KERB)
 
     # TODO: tweak room options for good user experience (history visibility, public, do we want federation? etc)
 
     # IMPORTANT: don't allow people remove aliases! that breaks the bot - power levels
+    # uhhh yes but if people know what they are doing they can remove the alias to move
+    # to another room for bridging
 
     # For instance you can set "who can read history?" to "everyone" instead of "members, all messages" (current)
     # or to members, but only history since joining (which would reflect the zephyr behavior), but the point
@@ -86,6 +89,13 @@ def create_zephyr_room(cls, instance):
         alias_localpart=alias_localpart,
         name=f'-c {cls} -i {instance}', # TODO: use a friendlier name
         preset='public_chat',
+        # TODO not even tested
+        power_level_content_override={
+            "users": {
+                f"@{config.username}:{config.homeserver}": 100,
+                # TODO add admin users perhaps?
+            }
+        }
     )
 
 

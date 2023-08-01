@@ -195,7 +195,7 @@ def send_text_message(room_id, user_id, message, additional_metadata, timestamp)
     return code == 200
 
 
-def create_room(alias_localpart = None, name = None, preset = None) -> str | None:
+def create_room(alias_localpart = None, name = None, preset = None, **kwargs) -> str | None:
     """
     Creates a room, and returns the room ID of the newly created room
 
@@ -211,6 +211,8 @@ def create_room(alias_localpart = None, name = None, preset = None) -> str | Non
     # TODO: ideally use an enum
     if preset:
         body |= {'preset': preset}
+
+    body |= kwargs
 
     response, code = api_query('POST', '/_matrix/client/v3/createRoom', body)
     if code == 200:
