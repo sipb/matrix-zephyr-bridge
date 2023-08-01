@@ -1,3 +1,6 @@
+# Private
+private-*
+
 # Keytab
 *.keytab
 

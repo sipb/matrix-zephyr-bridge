@@ -49,6 +49,7 @@ This is a Matrix application service which will automatically create rooms as ne
  - [ ] Zulip->Matrix images and files
  - [ ] ~~Support unauthenticated DMs (via bot account as proxy)~~ Don't like this idea anymore
  - [ ] Support sending and receiving DMs (via user through Webathena tickets, they will not necessarily be authentic)
+    well if you DM someone, it should check if they have a Matrix account first and suggest DMing them there
  - [ ] Support sending authentic messages (using Webathena tickets)
  - [ ] (only if you file an issue/PR) Test that this works for other Zephyrs outside of ATHENA.MIT.EDU
 

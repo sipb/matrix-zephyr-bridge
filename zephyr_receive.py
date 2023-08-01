@@ -117,6 +117,7 @@ def on_zephyr_message(message: zephyr.ZNotice):
 
     # Join user to room (if needed)
     # TODO: check if in room, then join only if not
+    # mautrix Python has ensure_joined. it also has a store which can be simply json
     matrix.join_room(room_alias, matrix_user_id)
 
     # Send message!
