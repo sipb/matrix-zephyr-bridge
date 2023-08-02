@@ -27,6 +27,9 @@ class Config:
     # URL for the Matrix homeserver to connect to the appservice
     url: str
 
+    # format string for Matrix display names
+    displayname_format: Optional[str] = "{name} - Zephyr"
+
     # Naming conventions / prefixes to claim
     zephyr_user_prefix: Optional[str] = "_zephyr_"
     zephyr_space_prefix: Optional[str] = "Z/" 

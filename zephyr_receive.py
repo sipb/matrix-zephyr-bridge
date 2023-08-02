@@ -110,6 +110,9 @@ def on_zephyr_message(message: zephyr.ZNotice):
     # Get display name (either kerb or signature if it looks close enough to Hesiod's name)
     display_name = signature if is_reasonable_signature(sender, signature) else sender
 
+    # Apply desired display name format
+    display_name = config.displayname_format.format(name=display_name)
+
     # Adjust display name (if needed)
     current_matrix_name = matrix.get_global_display_name(matrix_user_id)
     if display_name and current_matrix_name != display_name:

@@ -19,6 +19,10 @@ listen_port: 29781
 # URL for the Matrix homeserver to connect to the appservice
 url: http://localhost:29781
 
+# Format to show display names on Matrix as
+# {name} will be replaced with their name
+displayname_format: "{name} - Zephyr"
+
 # Tell the homeserver that this appservice bridges the "zephyr" protocol
 enable_thirdparty_reporting: false
 
