@@ -37,6 +37,7 @@ def process_events(txn_id):
             zephyr_location = get_zephyr_location(event.room_id)
             if not zephyr_location:
                 print(f"Not bridging unknown event from {event.sender} in {event.room_id}", file=sys.stderr)
+                continue
             
             # Handle "emotes"
             if message_type == 'm.emote':

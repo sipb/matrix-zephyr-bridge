@@ -121,6 +121,7 @@ def get_zephyr_location(mxid: str) -> tuple[str] | bool:
     """
     # Resolve canonical ID
     if mxid.startswith('!'):
+        # TODO: query all aliases, not just the canonical one
         mxid = matrix.get_room_alias(mxid)
     # Could not find canonical ID
     if mxid is None:
