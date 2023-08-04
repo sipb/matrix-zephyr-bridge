@@ -8,6 +8,7 @@ import sys
 import matrix
 from constants import *
 from zephyr_client import Zephyr
+from wrapping import wrap_lines
 
 renew_kerberos_tickets()
 
@@ -55,7 +56,7 @@ def process_events(txn_id):
             cls, instance = zephyr_location
             print(cls, instance, event.sender, zephyr_content)
             Zephyr.send_message(
-                message=zephyr_content, # TODO: handle formatting, m.emote, etc
+                message=wrap_lines(zephyr_content), # TODO: handle formatting
                 cls=cls,
                 instance=instance,
                 display_name=matrix.get_room_display_name(event.room_id, event.sender),
