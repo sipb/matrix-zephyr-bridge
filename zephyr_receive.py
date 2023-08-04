@@ -6,6 +6,7 @@ from util import strip_default_realm, create_zephyr_room, get_zephyr_localpart, 
 from kerberos import renew_kerberos_tickets
 from config import config
 import matrix
+from wrapping import unwrap_lines
 
 z: Zephyr = Zephyr()
 
@@ -126,7 +127,7 @@ def on_zephyr_message(message: zephyr.ZNotice):
     # Send message!
     matrix.send_text_message(
         room_id=room_alias,
-        message=content.rstrip('\n'), # remove trailing new lines
+        message=unwrap_lines(content.rstrip('\n')), # remove trailing new lines
         user_id=f'@{config.zephyr_user_prefix}{sender}:{config.homeserver}',
         additional_metadata={
             'im.zephyr.authentic': message.auth,
