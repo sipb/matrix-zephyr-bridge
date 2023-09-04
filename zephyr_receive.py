@@ -13,6 +13,7 @@ def handle_bot_command(message: str, sender: str) -> str:
     """
     Synchronously get the output of a command
     """
+    message = message.strip()
     command = message.split(' ')[0]
     if command == 'ping':
         return 'pong'
