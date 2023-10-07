@@ -2,6 +2,10 @@
 
 [Zephyr](https://en.wikipedia.org/wiki/Zephyr_(protocol)) bridge for Matrix
 
+![Matrix message](img/element.png)
+
+![Matrix message on Zephyr](img/zwgc.png)
+
 ## How to run?
 
 1. Install dependencies (`pip install .` in python-zephyr)
