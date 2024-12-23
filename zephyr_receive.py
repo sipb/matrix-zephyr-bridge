@@ -65,12 +65,12 @@ def on_zephyr_message(message: zephyr.ZNotice):
         # In my testing, some messages without signature were sent as one field
         signature = sender
         content = message.fields[0]
-    elif len(message.fields) != 2:
+    elif len(message.fields) == 2:
+        signature, content = message.fields
+    else:
         print(f"Message does not have 1 or 2 fields, skipping!", file=sys.stderr)
         print(message.__dict__, file=sys.stderr)
         return
-
-    signature, content = message.fields
     
     # Respect blocked opcodes
     if message.opcode in config.blocked_opcodes:
