@@ -87,7 +87,7 @@ def on_zephyr_message(message: zephyr.ZNotice):
         signature = sender
 
     # This is a DM! 
-    if message.cls == DEFAULT_CLASS and message.instance == DEFAULT_INSTANCE:
+    if message.cls.upper() == DEFAULT_CLASS and message.instance.upper() == DEFAULT_INSTANCE:
         # If it's addressed to us, handle it as a command
         if recipient == OWN_KERB:
             print(f"Handling command from {sender}")
