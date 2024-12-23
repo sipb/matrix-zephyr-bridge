@@ -38,8 +38,9 @@ This is a Matrix application service which will automatically create rooms as ne
  - [ ] Bridge all instances of specific class (to space)
  - [ ] Bridge all instances of specific class (to consolidated room)
  - [ ] Make bridge easy to use by providing a DM interface and/or a web interface
+ - [ ] Allow adding Zephyr briding to an existing Matrix room (#6)
  - [x] Zephyr signatures <-> Matrix metadata
- - [ ] Zephyr signatures <-> Matrix display names if display name is similar enough
+ - [x] Zephyr signatures <-> Matrix display names if display name is similar enough
  - [ ] Add bot command on Zephyr to set display name on Matrix
  - [x] Ignore messages from specific ~~hosts~~ opcodes (such as ~~mattermost.mit.edu~~ mattermost, to avoid double bridging)
  - [x] Zephyr->Matrix metadata (authenticity and timestamp)
@@ -47,7 +48,7 @@ This is a Matrix application service which will automatically create rooms as ne
  - [ ] Support unclasses and `.d` instances (convention for off-topic conversations) (bridge as threads?)
  - [ ] Matrix->Zephyr formatting (HTML/MD to custom Zephyr syntax)
  - [ ] Matrix->Zephyr spoilers
- - [ ] Zephyr->Matrix formatting (parse custom Zephyr syntax into HTML)
+ - [x] Zephyr->Matrix formatting (parse custom Zephyr syntax into HTML)
  - [ ] Render Matrix->Zephyr replies in a reasonable format, even if it is no mention of original message at all (or a chopped version)
  - [ ] Import Gravatar/Zulip profile pictures
  - [ ] Zulip->Matrix images and files
