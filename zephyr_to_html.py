@@ -19,25 +19,25 @@ class _ZFrame:
     text: str
 
     # href for links
+    # NOTE: this is unused, copied from original code
     is_href: bool
     href: str
 
     enclosing: object # _ZFrame but I can't use itself as a type
 
 
-# TODO: follow matrix spec for HTML
 def zephyr_to_html(message):
     """
-    Convert Zephyr
+    Convert Zephyr to idiomatic Matrix HTML per https://spec.matrix.org/v1.13/client-server-api/#mroommessage-msgtypes
 
     >>> zephyr_to_html("hello@@world.com")
     'hello@world.com'
 
     >>> zephyr_to_html("@{@color(blue)@i(hello)}")
-    '<font color="blue"><i>hello</i></font>'
+    '<span data-mx-color="blue"><i>hello</i></span>'
 
     >>> zephyr_to_html("@b[hello @i{world @color(blue)this is a test}]")
-    '<b>hello <i>world <font color="blue">this is a test</font></i></b>'
+    '<b>hello <i>world <span data-mx-color="blue">this is a test</span></i></b>'
 
     >>> zephyr_to_html("hello@bold.com, someone forgot to escape the @")
     'hello@bold.com, someone forgot to escape the @'
@@ -76,19 +76,27 @@ def zephyr_to_html(message):
                 if buf.lower() in ("italic", "i"):
                     new_f.text = "<i>"
                     new_f.closing = "</i>"
-                elif buf.lower() == "small":
-                    new_f.text = "<font size=\"1\">"
-                    new_f.closing = "</font>"
+                elif buf.lower() == "huge":
+                    new_f.text = "<h1>"
+                    new_f.closing = "</h1>"
+                elif buf.lower() == "large":
+                    new_f.text = "<h2>"
+                    new_f.closing = "</h2>"
                 elif buf.lower() == "medium":
+                    # Presumably this is normal size, leaving the same for now
+                    # TODO: do something better
                     new_f.text = "<font size=\"3\">"
                     new_f.closing = "</font>"
-                elif buf.lower() == "large":
-                    new_f.text = "<font size=\"7\">"
-                    new_f.closing = "</font>"
+                elif buf.lower() == "small":
+                    # subscript is probably the closest thing
+                    new_f.text = "<sub>"
+                    new_f.closing = "</sub>"
                 elif buf.lower() in ("bold", "b"):
                     new_f.text = "<b>"
                     new_f.closing = "</b>"
                 elif buf.lower() == "font":
+                    # Changing the font is not currently supported by Matrix, leaving the same for now
+                    # https://spec.matrix.org/v1.13/client-server-api/#mroommessage-msgtypes
                     extra_f = _ZFrame()
                     extra_f.enclosing = frames
                     new_f.enclosing = extra_f
@@ -105,8 +113,8 @@ def zephyr_to_html(message):
                     extra_f.text = ""
                     extra_f.has_closer = False
                     extra_f.closer = frames.closer
-                    extra_f.closing = "</font>"
-                    new_f.text = "<font color=\""
+                    extra_f.closing = "</span>"
+                    new_f.text = "<span data-mx-color=\""
                     new_f.closing = "\">"
                 else:
                     new_f.text = ""
