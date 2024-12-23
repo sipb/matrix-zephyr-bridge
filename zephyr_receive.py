@@ -6,6 +6,7 @@ from util import strip_default_realm, create_zephyr_room, get_zephyr_localpart, 
 from kerberos import renew_kerberos_tickets
 from config import config
 import matrix
+from zephyr_to_html import zephyr_to_html
 
 z: Zephyr = Zephyr()
 
@@ -124,10 +125,12 @@ def on_zephyr_message(message: zephyr.ZNotice):
     # mautrix Python has ensure_joined. it also has a store which can be simply json
     matrix.join_room(room_alias, matrix_user_id)
 
+    message_plain = content.rstrip('\n') # remove trailing new lines
     # Send message!
     matrix.send_text_message(
         room_id=room_alias,
-        message=content.rstrip('\n'), # remove trailing new lines
+        message_plain=message_plain,
+        message_html=zephyr_to_html(message_plain),
         user_id=f'@{config.zephyr_user_prefix}{sender}:{config.homeserver}',
         additional_metadata={
             'im.zephyr.authentic': message.auth,

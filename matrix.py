@@ -168,16 +168,18 @@ def join_room(room_id: str, user_id: str) -> bool:
     return code == 200
 
 
-def send_text_message(room_id, user_id, message, additional_metadata, timestamp):
+def send_text_message(room_id, user_id, message_plain, message_html, additional_metadata, timestamp):
     """
-    Send a simple text message to the given room
+    Send a text message to the given room
     """
     # Resolve alias first, if necessary
     if room_id.startswith('#'):
         room_id = get_room_id(room_id)
 
     body = {
-        'body': message,
+        'body': message_plain,
+        'format': 'org.matrix.custom.html',
+        'formatted_body': message_html,
         'msgtype': 'm.text',
     }
     body |= additional_metadata
