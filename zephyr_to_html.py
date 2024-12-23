@@ -38,6 +38,9 @@ def zephyr_to_html(message):
 
     >>> zephyr_to_html("@b[hello @i{world @color(blue)this is a test}]")
     '<b>hello <i>world <font color="blue">this is a test</font></i></b>'
+
+    >>> zephyr_to_html("hello@bold.com, someone forgot to escape the @")
+    'hello@bold.com, someone forgot to escape the @'
     """
 
     frames: _ZFrame
@@ -50,7 +53,7 @@ def zephyr_to_html(message):
     frames.closer = None
 
     while message:
-        if message[0] == '@' and message[1] == '@':
+        if message[0] == '@' and len(message) > 1 and message[1] == '@':
             frames.text += "@"
             message = message[2:]
         elif message[0] == '@':
